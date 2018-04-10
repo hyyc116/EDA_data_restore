@@ -93,7 +93,6 @@ def store_data():
         ye_insert_sql = 'insert into ye(year,cid,{:}) values(%s,%s,{:})'.format(','.join(cols),','.join(['%s']*len(cols)))
         print ye_insert_sql
         for state in state_county_year_data.keys():
-            print state
 
             if state in state_name_id.keys():
                     state_id = state_name_id[state]
@@ -114,6 +113,8 @@ def store_data():
 
 
                 for year in state_county_year_data[state][county].keys():
+                    print state,county,year
+
                     attrs = state_county_year_data[state][county][year]
                     col_id = {}
                     col_subtype_attr_values = defaultdict(lambda:defaultdict(dict))

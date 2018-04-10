@@ -50,7 +50,7 @@ def create_tables():
     query_op.query_database(attrs_sql)
         
     ye_sql = '''
-        create table `ye`(
+        create table `yedata`(
             `id` int(10) NOT NULL AUTO_INCREMENT,
             `year` int(4) NOT NULL,
             `cid` int(10) NOT NULL,
