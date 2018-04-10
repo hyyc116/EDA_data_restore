@@ -91,7 +91,7 @@ def store_data():
         query_op = dbop()
         ye_insert_op = dbop()
         ye_insert_sql = 'insert into ye(year,cid,{:}) values(%s,%s,{:})'.format(','.join(cols),','.join(['%s']*len(cols)))
-        print ye_insert_sql
+        # print ye_insert_sql
         for state in state_county_year_data.keys():
 
             if state in state_name_id.keys():
@@ -113,7 +113,7 @@ def store_data():
 
 
                 for year in state_county_year_data[state][county].keys():
-                    print state,county,year
+                    logging.info('{:},{:},{:}....'.format(state,county,year))
 
                     attrs = state_county_year_data[state][county][year]
                     col_id = {}
