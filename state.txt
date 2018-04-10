@@ -1,0 +1,53 @@
+Delaware ,DE
+Hawaii ,HI
+Puerto Rico ,PR
+Texas ,TX
+Massachusetts ,MA
+Maryland ,MD
+Iowa ,IA
+Maine ,ME
+Idaho ,ID
+Michigan ,MI
+Utah ,UT
+Minnesota ,MN
+Missouri ,MO
+Illinois ,IL
+Indiana ,IN
+Mississippi ,MS
+Montana ,MT
+Alaska ,AK
+Alabama ,AL
+Virginia ,VA
+Arkansas ,AR
+Virgin Islands ,VI
+North Carolina ,NC
+North Dakota ,ND
+Nebraska ,NE
+Rhode Island ,RI
+Arizona ,AZ
+New Hampshire ,NH
+New Jersey ,NJ
+Vermont ,VT
+New Mexico ,NM
+Florida ,FL
+Nevada ,NV
+Washington ,WA
+New York ,NY
+South Carolina ,SC
+South Dakota ,SD
+Wisconsin ,WI
+Ohio ,OH
+Georgia ,GA
+Oklahoma ,OK
+California ,CA
+West Virginia ,WV
+Wyoming ,WY
+Oregon ,OR
+Kansas ,KS
+Colorado ,CO
+Kentucky ,KY
+Connecticut ,CT
+Pennsylvania ,PA
+Louisiana ,LA
+Tennessee ,TN
+District of Columbia,DC
