@@ -31,12 +31,99 @@ def create_tables():
         create table `county`(
             `id` int(10) NOT NULL AUTO_INCREMENT,
             `name` varchar(30) NOT NULL,
-            `sid` int(10) NOT NULL,
-            FOREIGN KEY(sid) REFERENCES state(id),
             PRIMARY KEY(`id`)
         );
         '''
     query_op.query_database(county_sql)
+
+
+    city_sql = '''
+        create table `city`(
+            `id` int(10) NOT NULL AUTO_INCREMENT,
+            `name` varchar(30) NOT NULL,
+            PRIMARY KEY(`id`)
+        );
+        '''
+    query_op.query_database(city_sql)
+
+    ### relations
+
+    ## state_county
+    sc_sql = '''
+        create table `state_county`(
+            `id` int(10) NOT NULL AUTO_INCREMENT,
+            `sid` int(10) NOT NULL,
+            FOREIGN KEY (`sid`) REFERENCES state(`id`),
+            `cid` int(10) NOT NULL,
+            FOREIGN KEY (`cid`) REFERENCES county(`id`),
+            PRIMARY KEY(`id`)
+        );
+        '''
+    query_op.query_database(sc_sql)
+
+    cs_sql = '''
+        create table `county_state`(
+            `id` int(10) NOT NULL AUTO_INCREMENT,
+            `cid` int(10) NOT NULL,
+            FOREIGN KEY (`cid`) REFERENCES county(`id`),
+            `sid` int(10) NOT NULL,
+            FOREIGN KEY (`sid`) REFERENCES state(`id`),
+            PRIMARY KEY(`id`)
+        );
+        '''
+    query_op.query_database(cs_sql)
+
+    ## city state
+    cs_sql = '''
+        create table `city_state`(
+            `id` int(10) NOT NULL AUTO_INCREMENT,
+            `cid` int(10) NOT NULL,
+            FOREIGN KEY (`cid`) REFERENCES city(`id`),
+            `sid` int(10) NOT NULL,
+            FOREIGN KEY (`sid`) REFERENCES state(`id`),
+            PRIMARY KEY(`id`)
+        );
+        '''
+    query_op.query_database(cs_sql)
+
+    ## state city
+    cs_sql = '''
+        create table `state_city`(
+            `id` int(10) NOT NULL AUTO_INCREMENT,
+            `sid` int(10) NOT NULL,
+            FOREIGN KEY (`sid`) REFERENCES state(`id`),
+            `cid` int(10) NOT NULL,
+            FOREIGN KEY (`cid`) REFERENCES city(`id`),
+            PRIMARY KEY(`id`)
+        );
+        '''
+    query_op.query_database(cs_sql)
+
+    ## city county
+    cs_sql = '''
+        create table `city_county`(
+            `id` int(10) NOT NULL AUTO_INCREMENT,
+            `cid` int(10) NOT NULL,
+            FOREIGN KEY (`cid`) REFERENCES city(`id`),
+            `ctid` int(10) NOT NULL,
+            FOREIGN KEY (`ctid`) REFERENCES county(`id`),
+            PRIMARY KEY(`id`)
+        );
+        '''
+    query_op.query_database(cs_sql)
+
+    ## county city
+    cs_sql = '''
+        create table `county_city`(
+            `id` int(10) NOT NULL AUTO_INCREMENT,
+            `ctid` int(10) NOT NULL,
+            FOREIGN KEY (`ctid`) REFERENCES county(`id`),
+            `cid` int(10) NOT NULL,
+            FOREIGN KEY (`cid`) REFERENCES city(`id`),
+            PRIMARY KEY(`id`)
+        );
+        '''
+    query_op.query_database(cs_sql)
 
     attrs_sql = '''
         create table `attribute`(
@@ -53,8 +140,6 @@ def create_tables():
         create table `ye`(
             `id` int(10) NOT NULL AUTO_INCREMENT,
             `year` int(4) NOT NULL,
-            `cid` int(10) NOT NULL,
-            FOREIGN KEY (`cid`) REFERENCES county(`id`),
             `allsales` int(10) DEFAULT NULL,
             FOREIGN KEY (`allsales`) REFERENCES attribute(`id`),
             `totalgained` int(10) DEFAULT NULL,
@@ -81,32 +166,34 @@ def create_tables():
         );
         '''
     query_op.query_database(ye_sql)
-    
+
+    ## county ye
+    cy_sql = '''
+        create table `c_ye`(
+            `id` int(10) NOT NULL AUTO_INCREMENT,
+            `cid` int(4) NOT NULL,
+            FOREIGN KEY (`cid`) REFERENCES county(`id`),
+            `yid` int(10) NOT NULL,
+            FOREIGN KEY (`yid`) REFERENCES ye(`id`),
+            PRIMARY KEY(`id`)
+        );
+        '''
+    query_op.query_database(cy_sql)
 
     job_sql = '''
         create table `job`(
             `id` int(10) NOT NULL AUTO_INCREMENT,
             `title` varchar(30) NOT NULL,
             `company` varchar(10) NOT NULL,
+            `position` varchar(10) NOT NULL,
             `summary` text DEFAULT NULL,
             `publishdate` varchar(30) NOT NULL,
             `salary` int(20) DEFAULT -1,
             `path` varchar(10) NOT NULL,
-            `cid` int(10) NOT NULL,
-            FOREIGN KEY (`cid`) REFERENCES county(`id`),
             PRIMARY KEY(`id`)
         );
         '''
     query_op.query_database(job_sql)
-
-    pos_sql = '''
-        create table `jobname`(
-            `id` int(10) NOT NULL AUTO_INCREMENT,
-            `name` varchar(50) NOT NULL,
-            PRIMARY KEY(`id`)
-        );
-        '''
-    query_op.query_database(pos_sql)
 
     skill_sql = '''
         create table `skill`(
@@ -117,19 +204,29 @@ def create_tables():
         '''
     query_op.query_database(skill_sql)
 
-    jps_skill = '''
+    job_skill = '''
         create table `relations`(
             `id` int(10) NOT NULL AUTO_INCREMENT,
             `jid` int(10) NOT NULL,
-            `pid` int(10) NOT NULL,
             `skillid` int(10) NOT NULL,
             FOREIGN KEY (`jid`) REFERENCES job(`id`),
-            FOREIGN KEY (`pid`) REFERENCES jobname(`id`),
             FOREIGN KEY (`skillid`) REFERENCES skill(`id`),
             PRIMARY KEY(`id`)
         );
         '''
-    query_op.query_database(jps_skill)
+    query_op.query_database(job_skill)
+
+    job_city_sql = '''
+        create table `job_city`(
+            `id` int(10) NOT NULL AUTO_INCREMENT,
+            `jid` int(10) NOT NULL,
+            `cid` int(10) NOT NULL,
+            FOREIGN KEY (`jid`) REFERENCES job(`id`),
+            FOREIGN KEY (`cid`) REFERENCES city(`id`),
+            PRIMARY KEY(`id`)
+        );
+        '''
+    query_op.query_database(job_city_sql)
 
     query_op.close_db()
 
