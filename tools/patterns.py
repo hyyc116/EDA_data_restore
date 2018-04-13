@@ -60,6 +60,9 @@ def chunk_file(path):
     for sent in sent_tokenize(content):
         try:
             # print sent
+            if '(' in sent:
+                sent = sent.replace('(','')
+
             chunks = chunk_sent(sent)
             # print chunks
             trees = load_iobtags(chunks)

@@ -9,7 +9,7 @@ import codecs
 import random as rn
 import logging
 #logging file
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s',level=logging.ERROR)
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s',level=logging.INFO)
 
 class dbop:
 
