@@ -71,8 +71,9 @@ def extract_skill_from_folder(folder,start=0, end=-1, worker=20):
     	# line = chunk_file(filepath)
         lines.append(line)
 
-    print progress,skill_count
+    # print progress,skill_count
     open('data/jid_NPs_{:}_{:}.txt'.format(start,end),"w").write('\n'.join(lines))
+    logging.info('saved to data/jid_NPs_{:}_{:}.txt'.format(start,end))
 
 def has_skills(content):
 	content = content.lower()
