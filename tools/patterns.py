@@ -34,6 +34,7 @@ def token_sents(content):
 
 #chunk sentences
 def chunk_file(path):
+    print path
     content = open(path).read()
     content = content[content.index(':')+2:-2]
     content = content.strip().replace("\\u002F",'/')
