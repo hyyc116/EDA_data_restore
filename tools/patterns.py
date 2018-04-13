@@ -48,6 +48,9 @@ def token_sents(content):
 
 #chunk sentences
 def chunk_file(path):
+
+    if path is None:
+        return
     # print path
     content = open(path).read()
     content = content.decode('utf-8',errors='ignore')
@@ -77,7 +80,7 @@ def chunk_file(path):
     # print result
     result = path.split('/')[-1][:-5]+"\t"+','.join(set(NPs))
     # print result
-    return result
+    print result
 
 def get_NPs(trees):
     NPs = []

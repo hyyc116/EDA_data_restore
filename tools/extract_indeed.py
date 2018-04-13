@@ -38,42 +38,24 @@ def extract_salary(content):
     return ','.join(ss)
 
 
-def extract_skill_from_folder(folder,start=0, end=-1, worker=20):
+def extract_skill_from_folder(folder,start=0, end=-1, worker=20,extracted_file_path):
     
     logging.info("folder path:{:}, start from {:} to end {:} with {:} workers".format(folder,start,end,worker))
+    extracted_files = set([line.strip.split('\t')[0] for line in open(extracted_file_path)])
+
     filelist = []
     folder = folder if folder.endswith('/') else folder+'/'
     for filename in os.listdir(folder):
-        filepath = folder+filename
+    	if filename in extracted_files:
+    		filepath = None
+    	else:
+        	filepath = folder+filename
         filelist.append(filepath)
 
     lines = []
     pool = ThreadPool(worker)
-    results = pool.map(chunk_file, filelist[start:end])
-    # progress = 0
-    # skill_count = 0
-    # for filepath in filelist[start:end]:
-    # 	progress+=1
-    # 	if progress%10000==0:
-    # 		logging.info('progress {:} ...'.format(progress))
-
-    # 	content = open(filepath).read()
-    # 	if not ":" in content:
-    # 		continue
-    # 	content = content[content.index(':')+2:-2]
-    # 	content = content.strip().replace("\\u002F",'/')
-    # 	content = re.sub(r'<.*?>','',content).replace('\\n',' ')
-
-    # 	if not has_skills(content):
-    # 		continue
-    for line in results:
-    # 	skill_count+=1
-    	# line = chunk_file(filepath)
-        lines.append(line)
-
-    # print progress,skill_count
-    open('/home/yong1991/workspace/indeed_cities/EDA_data_restore/data/jid_NPs_{:}_{:}.txt'.format(start,end),"w").write('\n'.join(lines))
-    logging.info('saved to data/jid_NPs_{:}_{:}.txt'.format(start,end))
+    pool.map(chunk_file, filelist[start:end])
+    logging.info('done')
 
 def has_skills(content):
 	content = content.lower()
