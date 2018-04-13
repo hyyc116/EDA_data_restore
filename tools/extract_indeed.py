@@ -42,10 +42,20 @@ def extract_NP_from_content():
 
 def extract_salary_from_folder(folder):
 	folder = folder if folder.endswith('/') else folder+'/'
+	progress = 0
 	for filename in os.listdir(folder):
 		filepath = folder+filename
 		content = open(filepath).read().strip()
 		salary = extract_salary_from_content(content)
+		progress+=1
+
+		if progress%10000==0:
+			logging.info('progress {:} ...'.format(progress))
+
+		if salary is None:
+			continue
+
+
 		print filename[:-5]+'\t'+salary
 
 
