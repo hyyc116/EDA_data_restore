@@ -47,7 +47,7 @@ def extract_skill_from_folder(folder,start=0, end=-1, worker=20):
         filepath = folder+filename
         filelist.append(filepath)
 
-    lines = {}
+    lines = []
     # pool = ThreadPool(worker)
     # results = pool.map(chunk_file, filelist[start:end])
     progress = 0
