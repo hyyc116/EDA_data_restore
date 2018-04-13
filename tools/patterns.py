@@ -15,6 +15,19 @@ import json
 import re
 from nltk.tree import Tree
 annotator = Annotator()
+lg = logger()
+
+class logger:
+
+    def __init__(self):
+        self._index=0
+
+    def step(self,step):
+        self._index+=1
+
+        if self._index%step==0:
+            logging.info('progress:{:} ..'.format(self._index))
+
 
 #chunk sentence
 def chunk_sent(sentence):
@@ -42,7 +55,7 @@ def chunk_file(path):
     content = content.strip().replace("\\u002F",'/')
     content = re.sub(r'<.*?>','',content).replace('\\n',' ')
     NPs = []
-
+    lg.step(10)
     for sent in sent_tokenize(content):
         try:
             # print sent
