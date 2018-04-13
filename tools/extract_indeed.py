@@ -25,7 +25,8 @@ def extract_positions(extracted_ids_path):
     _cursor = _db.cursor()
 
     params = []
-    for jid,title in _cursor.execute(sql):
+    _cursor.execute(sql)
+    for jid,title in _cursor:
     	if jid in extracted_ids:
     		continue
     	params.append((jid,title))
