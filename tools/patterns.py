@@ -41,7 +41,7 @@ def chunk_file(path):
     content = re.sub(r'<.*?>','',content).replace('\\n','.')
     NPs = []
 
-    for sent in content:
+    for sent in sent_tokenize(content):
         try:
             print sent
             chunks = chunk_sent(sent)
