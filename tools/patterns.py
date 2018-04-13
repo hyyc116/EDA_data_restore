@@ -34,21 +34,26 @@ def token_sents(content):
 
 #chunk sentences
 def chunk_file(path):
-    print path
+    # print path
     content = open(path).read()
     content = content[content.index(':')+2:-2]
     content = content.strip().replace("\\u002F",'/')
     content = re.sub(r'<.*?>','',content).split('\\n')
     NPs = []
+
     for sent in content:
-        # print sent
-        chunks = chunk_sent(sent)
-        # print chunks
-        trees = load_iobtags(chunks)
-        # print trees
-        nps = get_NPs(trees)
-        # print nps
-        NPs.extend(nps)
+        try:
+            # print sent
+            chunks = chunk_sent(sent)
+            # print chunks
+            trees = load_iobtags(chunks)
+            # print trees
+            nps = get_NPs(trees)
+            # print nps
+            NPs.extend(nps)
+        except:
+            logging.info('errors {:} ..')
+            continue
     # print result
     result = path.split('/')[-1][:-5]+"\t"+','.join(set(NPs))
     # print result
