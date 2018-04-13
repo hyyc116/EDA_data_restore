@@ -50,6 +50,7 @@ def token_sents(content):
 def chunk_file(path):
     # print path
     content = open(path).read()
+    content = content.decode('utf-8',errors='ignore')
     if ":" not in content:
         return path.split('/')[-1][:-5]+"\t"
     content = content[content.index(':')+2:-2]
