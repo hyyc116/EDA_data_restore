@@ -15,7 +15,6 @@ import json
 import re
 from nltk.tree import Tree
 annotator = Annotator()
-lg = logger()
 
 class logger:
 
@@ -27,6 +26,8 @@ class logger:
 
         if self._index%step==0:
             logging.info('progress:{:} ..'.format(self._index))
+
+lg = logger()
 
 
 #chunk sentence
