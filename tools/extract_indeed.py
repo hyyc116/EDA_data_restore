@@ -48,28 +48,28 @@ def extract_skill_from_folder(folder,start=0, end=-1, worker=20):
         filelist.append(filepath)
 
     lines = []
-    # pool = ThreadPool(worker)
-    # results = pool.map(chunk_file, filelist[start:end])
-    progress = 0
-    skill_count = 0
-    for filepath in filelist[start:end]:
-    	progress+=1
-    	if progress%10000==0:
-    		logging.info('progress {:} ...'.format(progress))
+    pool = ThreadPool(worker)
+    results = pool.map(chunk_file, filelist[start:end])
+    # progress = 0
+    # skill_count = 0
+    # for filepath in filelist[start:end]:
+    # 	progress+=1
+    # 	if progress%10000==0:
+    # 		logging.info('progress {:} ...'.format(progress))
 
-    	content = open(filepath).read()
-    	if not ":" in content:
-    		continue
-    	content = content[content.index(':')+2:-2]
-    	content = content.strip().replace("\\u002F",'/')
-    	content = re.sub(r'<.*?>','',content).replace('\\n',' ')
+    # 	content = open(filepath).read()
+    # 	if not ":" in content:
+    # 		continue
+    # 	content = content[content.index(':')+2:-2]
+    # 	content = content.strip().replace("\\u002F",'/')
+    # 	content = re.sub(r'<.*?>','',content).replace('\\n',' ')
 
-    	if not has_skills(content):
-    		continue
-
-    	skill_count+=1
+    # 	if not has_skills(content):
+    # 		continue
+    for line in results:
+    # 	skill_count+=1
     	# line = chunk_file(filepath)
-        # lines.append(line)
+        lines.append(line)
 
     print progress,skill_count
     open('data/jid_NPs_{:}_{:}.txt'.format(start,end),"w").write('\n'.join(lines))
