@@ -41,7 +41,9 @@ def chunk_file(path):
     for sent in enumerate(token_sents(content)):
         NPs.extend(get_NPs(load_iobtags(chunk_sent(sent))))
     # print result
-    return path.split('/')[-1][:-5]+"\t"+','.join(set(NPs))
+    result = path.split('/')[-1][:-5]+"\t"+','.join(set(NPs))
+    print result
+    return result
 
 def get_NPs(trees):
     NPs = []
