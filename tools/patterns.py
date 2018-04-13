@@ -40,18 +40,18 @@ def chunk_file(path):
     content = re.sub(r'<.*?>','',content).split('\\n')
     NPs = []
     for sent in content:
-        print sent
+        # print sent
         chunks = chunk_sent(sent)
-        print chunks
+        # print chunks
         trees = load_iobtags(chunks)
-        print trees
+        # print trees
         nps = get_NPs(trees)
-        print nps
+        # print nps
         NPs.extend(nps)
     # print result
     result = path.split('/')[-1][:-5]+"\t"+','.join(set(NPs))
     # print result
-    return [result]
+    return result
 
 def get_NPs(trees):
     NPs = []
