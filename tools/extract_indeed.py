@@ -48,16 +48,16 @@ def extract_skill_from_folder(folder,start=0, end=-1, worker=20):
         filelist.append(filepath)
 
     lines = {}
-    pool = ThreadPool(worker)
-    results = pool.map(chunk_file, filelist[start:end])
+    # pool = ThreadPool(worker)
+    # results = pool.map(chunk_file, filelist[start:end])
     progress = 0
-    for result in results:
+    for filepath in filelist[start:end]:
     	progress+=1
 
     	if progress%10==0:
     		logging.info('progress {:} ...'.format(progress))
-
-        lines.append(result)
+    	line = chunk_file(filepath)
+        lines.append(line)
 
     open('data/jid_NPs_{:}_{:}.txt'.format(start,end),"w").write('\n'.join(lines))
 
