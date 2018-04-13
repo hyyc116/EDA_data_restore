@@ -51,7 +51,7 @@ def chunk_file(path):
     # print path
     content = open(path).read()
     if ":" not in content:
-        return result = path.split('/')[-1][:-5]+"\t"
+        return path.split('/')[-1][:-5]+"\t"
     content = content[content.index(':')+2:-2]
     content = content.strip().replace("\\u002F",'/')
     content = re.sub(r'<.*?>','',content).replace('\\n',' ')
