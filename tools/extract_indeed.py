@@ -38,7 +38,7 @@ def extract_salary(content):
     return ','.join(ss)
 
 
-def extract_skill_from_folder(folder,start=0, end=-1, worker=20,extracted_file_path):
+def extract_skill_from_folder(folder,extracted_file_path,start=0, end=-1, worker=20):
     
     logging.info("folder path:{:}, start from {:} to end {:} with {:} workers".format(folder,start,end,worker))
     extracted_files = set([line.strip.split('\t')[0] for line in open(extracted_file_path)])
@@ -98,7 +98,7 @@ if __name__ == '__main__':
 		end = int(sys.argv[4])
 		workers = int(sys.argv[5])
 		exsiting_file = sys.argv[6]
-		extract_skill_from_folder(folder,start,end,workers,exsiting_file)
+		extract_skill_from_folder(folder,exsiting_file,start,end,workers)
 
 
 
