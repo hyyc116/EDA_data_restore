@@ -11,12 +11,32 @@ import sys
 import os
 from db_util import *
 from patterns import chunk_file
-import json
 from multiprocessing.dummy import Pool as ThreadPool
+import MySQLdb
+from patterns import chunk_content
 
-def extract_position_from_title(title):
+def extract_positions(extracted_ids_path):
 
-    pass
+    logging.info('Extracted file from {:} ...'.format(extracted_ids_path))
+    extracted_ids = set([line.strip() for line in open(extracted_ids_path)])
+
+    _db = MySQLdb.connect("localhost","root","hy123","EDA_DATA")
+    sql = 'select id,title from job'
+    _cursor = _db.cursor()
+
+    params = []
+    for jid,title in _cursor.execute(sql):
+    	if jid in extracted_ids:
+    		continue
+    	params.append((jid,title))
+    _cursor.close()
+    _db.close()
+
+    pool = ThreadPool(10)
+    pool.map(chunk_content, params)
+
+    logging.info('DONE')
+
 
 def extract_salary_from_content(content):
 
@@ -99,6 +119,10 @@ if __name__ == '__main__':
 		workers = int(sys.argv[5])
 		exsiting_file = sys.argv[6]
 		extract_skill_from_folder(folder,exsiting_file,start,end,workers)
+	elif label=='extract_position':
+		extract_positions(sys.argv[2])
+	else:
+		logging.info('No such operations!')
 
 
 

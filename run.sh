@@ -1,0 +1,3 @@
+nohup python tools/extract_indeed.py extract_skill /home/yong1991/workspace/indeed_cities/page_bak/ 0 1000000 10 data/jid_NPs_1m.txt 1>>data/jid_NPs_1m.txt 2>1m.test &   
+nohup python tools/extract_indeed.py extract_skill /home/yong1991/workspace/indeed_cities/page_bak/ 1000000 2000000 10 data/jid_NPs_2m.txt 1>>data/jid_NPs_2m.txt 2>1m.test &   
+nohup python tools/extract_indeed.py extract_skill /home/yong1991/workspace/indeed_cities/page_bak/ 2000000 3000000 10 data/jid_NPs_3m.txt 1>>data/jid_NPs_3m.txt 2>1m.test &   

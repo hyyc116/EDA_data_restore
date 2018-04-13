@@ -47,6 +47,37 @@ def token_sents(content):
     return sent_tokenize(content)
 
 #chunk sentences
+def chunk_content(jid,content):
+    
+    if content is None:
+        return
+
+    content = content.decode('utf-8',errors='ignore')
+    sent = content
+    NPs = []
+    lg.step(1000)
+    try:
+        # print sent
+        if '(' in sent:
+            sent = sent.replace('(','')
+
+        chunks = chunk_sent(sent)
+        # print chunks
+        trees = load_iobtags(chunks)
+        # print trees
+        nps = get_NPs(trees)
+        # print nps
+        NPs.extend(nps)
+    except:
+        logging.info('errors {:} ..')
+        return
+    # print result
+    result = jid+"\t"+','.join(set(NPs))
+    # print result
+    print result
+
+
+#chunk sentences
 def chunk_file(path):
 
     if path is None:
