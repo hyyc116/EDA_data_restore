@@ -47,8 +47,8 @@ def token_sents(content):
     return sent_tokenize(content)
 
 #chunk sentences
-def chunk_content(jid,content):
-    
+def chunk_content(param):
+    jid,content = param
     if content is None:
         return
 
