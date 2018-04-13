@@ -47,7 +47,7 @@ def extract_skill_from_folder(folder,start=0, end=-1, worker=20):
         filepath = folder+filename
         filelist.append(filepath)
 
-    jid_NPs = {}
+    lines = {}
     pool = ThreadPool(worker)
     results = pool.map(chunk_file, filelist[start:end])
     progress = 0
@@ -57,10 +57,9 @@ def extract_skill_from_folder(folder,start=0, end=-1, worker=20):
     	if progress%1000==0:
     		logging.info('progress {:} ...'.format(progress))
 
-        for jid,NPs in result:
-        	jid_NPs[jid] = NPs
+        lines.append(result)
 
-    open('data/jid_NPs_{:}_{:}'.format(start,end),"w").write(json.dumps(jid_NPs))
+    open('data/jid_NPs_{:}_{:}.txt'.format(start,end),"w").write('\n'.join(lines))
 
 
 def extract_salary_from_folder(folder):
