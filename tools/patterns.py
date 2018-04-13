@@ -2,15 +2,11 @@
 
 import sys
 sys.path.append(".")
-import os
-from util import *
-import io
 
 reload(sys)  
 sys.setdefaultencoding('utf8')
 
 from practnlptools.tools import Annotator 
-from nltk.chunk import conlltags2tree, tree2conlltags
 from nltk.tokenize import sent_tokenize
 from collections import defaultdict
 from multiprocessing.dummy import Pool as ThreadPool
