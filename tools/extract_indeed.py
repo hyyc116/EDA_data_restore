@@ -51,15 +51,37 @@ def extract_skill_from_folder(folder,start=0, end=-1, worker=20):
     # pool = ThreadPool(worker)
     # results = pool.map(chunk_file, filelist[start:end])
     progress = 0
+    skill_count = 0
     for filepath in filelist[start:end]:
     	progress+=1
-
     	if progress%10==0:
     		logging.info('progress {:} ...'.format(progress))
-    	line = chunk_file(filepath)
-        lines.append(line)
 
+    	content = open(path).read()
+    	content = content[content.index(':')+2:-2]
+    	content = content.strip().replace("\\u002F",'/')
+    	content = re.sub(r'<.*?>','',content).replace('\\n',' ')
+
+    	if not has_skills(content):
+    		continue
+
+    	skill_count+=1
+    	# line = chunk_file(filepath)
+        # lines.append(line)
+
+    print progress,skill_count
     open('data/jid_NPs_{:}_{:}.txt'.format(start,end),"w").write('\n'.join(lines))
+
+def has_skills(content):
+	content = content.lower()
+
+	keywords = ['experience','skill','technology','requirement']
+
+	for keyword in keywords:
+		if keyword in content:
+			return True
+
+	return False
 
 
 def extract_salary_from_folder(folder):
