@@ -41,7 +41,7 @@ def extract_salary(content):
 def extract_skill_from_folder(folder,extracted_file_path,start=0, end=-1, worker=20):
     
     logging.info("folder path:{:}, start from {:} to end {:} with {:} workers".format(folder,start,end,worker))
-    extracted_files = set([line.strip.split('\t')[0] for line in open(extracted_file_path)])
+    extracted_files = set([line.strip().split('\t')[0] for line in open(extracted_file_path)])
 
     filelist = []
     folder = folder if folder.endswith('/') else folder+'/'
