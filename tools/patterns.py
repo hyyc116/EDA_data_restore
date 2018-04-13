@@ -15,6 +15,7 @@ import json
 import re
 from nltk.tree import Tree
 annotator = Annotator()
+
 #chunk sentence
 def chunk_sent(sentence):
     try:
@@ -23,7 +24,6 @@ def chunk_sent(sentence):
         return iobtags
     except IndexError, e:
         logging.error(e.args)
-
 
 def load_iobtags(iobtags):
     return conlltags2tree(iobtags)
@@ -39,6 +39,7 @@ def chunk_file(path):
     content = re.sub(r'<.*?>','',content).replace('\n','')
     NPs = []
     for sent in enumerate(token_sents(content)):
+        print sent
         chunks = chunk_sent(sent)
         print chunks
         trees = load_iobtags(chunks)
