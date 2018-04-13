@@ -18,7 +18,7 @@ from patterns import chunk_content
 def extract_positions(extracted_ids_path):
 
     logging.info('Extracted file from {:} ...'.format(extracted_ids_path))
-    extracted_ids = set([line.strip() for line in open(extracted_ids_path)])
+    extracted_ids = set([line.strip().split('\t')[0] for line in open(extracted_ids_path)])
 
     _db = MySQLdb.connect("localhost","root","hy123","EDA_DATA")
     sql = 'select id,title from job'
