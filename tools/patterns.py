@@ -65,7 +65,7 @@ def get_NPs(trees):
         tree = trees[i]
         if isinstance(tree,Tree) and tree.label()=="NP":
             wordseq,posseq = zip(*tree)
-            NPs.append(" ".join(wordseq))
+            NPs.append(" ".join(wordseq).strip())
     return NPs
 
 
