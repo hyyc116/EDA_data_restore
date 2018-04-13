@@ -39,7 +39,13 @@ def chunk_file(path):
     content = re.sub(r'<.*?>','',content).replace('\n','')
     NPs = []
     for sent in enumerate(token_sents(content)):
-        NPs.extend(get_NPs(load_iobtags(chunk_sent(sent))))
+        chunks = chunk_sent(sent)
+        print chunks
+        trees = load_iobtags(chunks)
+        print trees
+        nps = get_NPs(trees)
+        print nps
+        NPs.extend(nps)
     # print result
     result = path.split('/')[-1][:-5]+"\t"+','.join(set(NPs))
     # print result
