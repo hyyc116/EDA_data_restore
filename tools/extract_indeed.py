@@ -54,7 +54,7 @@ def extract_skill_from_folder(folder,start=0, end=-1, worker=20):
     skill_count = 0
     for filepath in filelist[start:end]:
     	progress+=1
-    	if progress%10==0:
+    	if progress%10000==0:
     		logging.info('progress {:} ...'.format(progress))
 
     	content = open(filepath).read()
