@@ -46,7 +46,7 @@ def extract_skill_from_folder(folder,start=0, end=-1, worker=20,extracted_file_p
     filelist = []
     folder = folder if folder.endswith('/') else folder+'/'
     for filename in os.listdir(folder):
-    	if filename in extracted_files:
+    	if filename[:-5] in extracted_files:
     		filepath = None
     	else:
         	filepath = folder+filename
