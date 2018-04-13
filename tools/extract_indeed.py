@@ -97,7 +97,8 @@ if __name__ == '__main__':
 		start  = int(sys.argv[3])
 		end = int(sys.argv[4])
 		workers = int(sys.argv[5])
-		extract_skill_from_folder(folder,start,end,workers)
+		exsiting_file = sys.argv[6]
+		extract_skill_from_folder(folder,start,end,workers,exsiting_file)
 
 
 
