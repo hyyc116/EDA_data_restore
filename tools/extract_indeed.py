@@ -54,7 +54,7 @@ def extract_skill_from_folder(folder,start=0, end=-1, worker=20):
     for result in results:
     	progress+=1
 
-    	if progress%1000==0:
+    	if progress%10==0:
     		logging.info('progress {:} ...'.format(progress))
 
         lines.append(result)
