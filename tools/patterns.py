@@ -56,7 +56,7 @@ def chunk_file(path):
     content = content.strip().replace("\\u002F",'/')
     content = re.sub(r'<.*?>','',content).replace('\\n',' ')
     NPs = []
-    lg.step(10)
+    lg.step(100)
     for sent in sent_tokenize(content):
         try:
             # print sent
