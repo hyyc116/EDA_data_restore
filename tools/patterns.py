@@ -5,31 +5,24 @@ sys.path.append(".")
 
 reload(sys)  
 sys.setdefaultencoding('utf8')
-
+from db_util import *
+from nltk.chunk import conlltags2tree
 from practnlptools.tools import Annotator 
 from nltk.tokenize import sent_tokenize
 from collections import defaultdict
 from multiprocessing.dummy import Pool as ThreadPool
 import json
-
-
+import re
+from nltk.tree import Tree
 annotator = Annotator()
-logger = iters_logger(1,"Chunking corpus, counting sentences.")
-
-def load_file(path):
-    ids = path.split("_")[-3]
-    content = open(path,"r",).read().strip()
-    return ids,unicode(content, errors="ignore")
-
-
 #chunk sentence
 def chunk_sent(sentence):
     try:
         annotations = annotator.getAnnotations(sentence) 
         iobtags=[(tuple(chunk)[0],tuple(pos)[1],tuple(chunk)[1].replace("S-","B-").replace("E-","I-")) for chunk,pos in zip(annotations['chunk'],annotations['pos'])]
-        return str(iobtags)
+        return iobtags
     except IndexError, e:
-        logger.error(e.args)
+        logging.error(e.args)
 
 
 def load_iobtags(iobtags):
@@ -41,14 +34,24 @@ def token_sents(content):
 
 #chunk sentences
 def chunk_file(path):
-    ids,content = load_file(path)
-
-    result = []
-    for i,sent in enumerate(token_sents(content)):
-        logger.step()
-        result.append((ids,i,chunk_sent(sent)))
+    content = open(path).read()
+    content = content[content.index(':')+1:-2]
+    content = re.sub(r'<.*?>','',content).replace('\n','')
+    NPs = []
+    for sent in enumerate(token_sents(content)):
+        NPs.extend(get_NPs(load_iobtags(chunk_sent(sent))))
     # print result
-    return result
+    return path.split('/')[:-5],set(NPs)
+
+def get_NPs(trees):
+    NPs = []
+    for i in range(len(trees)):
+        tree = trees[i]
+        if isinstance(tree,Tree) and tree.label()=="NP":
+            wordseq,posseq = zip(*tree)
+            NPs.append(" ".join(wordseq))
+    return NPs
+
 
 def chunk_folder(folder_path, index_path, start=0, end=-1, worker=4):
     
@@ -70,19 +73,11 @@ def chunk_folder(folder_path, index_path, start=0, end=-1, worker=4):
     logger.end()
 
 
-
-
-
-op = sys.argv[1]
-if op == "chunk_sentence":
-    print chunk_sent("We can use an NLTK corpus module to access a larger amount of chunked text. ")
-elif op=="chunk_file":
-    for s in chunk_file(sys.argv[2]):
-        print s
-elif op == "chunk_folder":
-    chunk_folder(sys.argv[2],sys.argv[3],start=int(sys.argv[4]),end=int(sys.argv[5]),worker=int(sys.argv[6]))
-else:
-    sys.stderr.write("No such operation: {:}\n".format(op))
+if __name__ == '__main__':
+    result = chunk_sent('Prepare written reports on issues related to the Health Policy agenda.')
+    # print result
+    trees =  load_iobtags(result)
+    print get_NPs(trees)
 
 
 

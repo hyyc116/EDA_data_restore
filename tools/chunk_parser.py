@@ -57,8 +57,8 @@ def get_NPs(trees):
 
 
 if __name__ == '__main__':
-    print chunk_sent('I have an apple pen.')
-
+    trees= load_iobtags(str(chunk_sent('I have an apple pen.'))) 
+    print trees
 
 
 

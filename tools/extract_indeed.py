@@ -10,6 +10,9 @@ import re
 import sys
 import os
 from db_util import *
+from patterns import chunk_file
+import json
+from multiprocessing.dummy import Pool as ThreadPool
 
 def extract_position_from_title(title):
 
@@ -35,9 +38,29 @@ def extract_salary(content):
     return ','.join(ss)
 
 
-def extract_NP_from_content():
+def extract_skill_from_folder(folder,out_path,start=0, end=-1, worker=20):
+    
+    logging.info("folder path:{:}, start from {:} to end {:} with {:} workers".format(folder,start,end,worker))
+    filelist = []
+    folder = folder if folder.endswith('/') else folder+'/'
+    for filename in os.listdir(folder):
+        filepath = folder+filename
+        filelist.append(filepath)
 
-    pass
+    jid_NPs = {}
+    pool = ThreadPool(worker)
+    results = pool.map(chunk_file, filelist[start:end])
+    progress = 0
+    for result in results:
+    	progress+=1
+
+    	if progress%1000==0:
+    		logging.info('progress {:} ...'.format(progress))
+
+        for jid,NPs in result:
+        	jid_NPs[jid] = NPs
+
+    open('data/jid_NPs_{:}_{:}'.format(start,end),"w").write(json.dumps(jid_NPs))
 
 
 def extract_salary_from_folder(folder):
@@ -55,7 +78,6 @@ def extract_salary_from_folder(folder):
 		if salary is None:
 			continue
 
-
 		print filename[:-5]+'\t'+salary
 
 
@@ -64,6 +86,12 @@ if __name__ == '__main__':
 	label = sys.argv[1]
 	if label=='extract_salary':
 		extract_salary_from_folder(sys.argv[2])
+	elif label=='extract_skill':
+		folder = sys.argv[2]
+		start  = int(sys.argv[3])
+		end = int(sys.argv[4])
+		workers = int(sys.argv[5])
+		extract_skill_from_folder(folder,start,end,workers)
 
 
 
