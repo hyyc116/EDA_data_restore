@@ -8,8 +8,11 @@
 '''
 import re
 import sys
+import os
+from db_util import *
 
-def extract_position_from_title():
+def extract_position_from_title(title):
+
     pass
 
 def extract_salary_from_content(content):
@@ -33,11 +36,33 @@ def extract_salary(content):
 
 
 def extract_NP_from_content():
-	
+
     pass
 
 
+def extract_salary_from_folder(folder):
+	folder = folder if folder.endswith('/') else folder+'/'
+	for filename in os.listdir(folder):
+		filepath = folder+filename
+		content = open(filepath).read().strip()
+		salary = extract_salary_from_content(content)
+		print filename[:-5]+'\t'+salary
+
+
+
 if __name__ == '__main__':
-	content = open(sys.argv[1]).read().strip()
-	extract_salary_from_content(content)
+	label = sys.argv[1]
+	if label=='extract_salary':
+		extract_salary_from_folder(sys.argv[2])
+
+
+
+
+
+
+
+
+
+
+
 

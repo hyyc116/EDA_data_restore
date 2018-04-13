@@ -1,5 +1,6 @@
 #coding:utf-8
-from db_util import *
+from db_util import dbop
+
 
 
 def create_tables():
