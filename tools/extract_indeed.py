@@ -20,7 +20,7 @@ def extract_positions(extracted_ids_path):
     logging.info('Extracted file from {:} ...'.format(extracted_ids_path))
     extracted_ids = set([line.strip().split('\t')[0] for line in open(extracted_ids_path)])
 
-    _db = MySQLdb.connect("localhost","root","hy123","EDA_DATA")
+    _db = MySQLdb.connect("localhost","root","hy123","indeed_city")
     sql = 'select id,title from job'
     _cursor = _db.cursor()
 
