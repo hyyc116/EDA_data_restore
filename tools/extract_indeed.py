@@ -57,7 +57,7 @@ def extract_skill_from_folder(folder,start=0, end=-1, worker=20):
     	if progress%10==0:
     		logging.info('progress {:} ...'.format(progress))
 
-    	content = open(path).read()
+    	content = open(filepath).read()
     	content = content[content.index(':')+2:-2]
     	content = content.strip().replace("\\u002F",'/')
     	content = re.sub(r'<.*?>','',content).replace('\\n',' ')
