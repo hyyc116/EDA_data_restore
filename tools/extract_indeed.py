@@ -38,7 +38,7 @@ def extract_salary(content):
     return ','.join(ss)
 
 
-def extract_skill_from_folder(folder,out_path,start=0, end=-1, worker=20):
+def extract_skill_from_folder(folder,start=0, end=-1, worker=20):
     
     logging.info("folder path:{:}, start from {:} to end {:} with {:} workers".format(folder,start,end,worker))
     filelist = []
