@@ -35,8 +35,8 @@ def token_sents(content):
 #chunk sentences
 def chunk_file(path):
     content = open(path).read()
-    content = content[content.index(':')+1:-2]
-    content = re.sub(r'<.*?>','',content).replace('\n','')
+    content = content[content.index(':')+2:-2]
+    content = re.sub(r'<.*?>','',content).replace('\\n','')
     NPs = []
     for sent in token_sents(content):
         print sent
