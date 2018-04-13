@@ -76,10 +76,7 @@ def chunk_folder(folder_path, index_path, start=0, end=-1, worker=4):
 
 
 if __name__ == '__main__':
-    result = chunk_sent('Prepare written reports on issues related to the Health Policy agenda.')
-    # print result
-    trees =  load_iobtags(result)
-    print get_NPs(trees)
+    print chunk_file(sys.argv[1])
 
 
 
