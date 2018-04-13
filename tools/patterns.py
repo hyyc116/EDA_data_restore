@@ -38,18 +38,18 @@ def chunk_file(path):
     content = open(path).read()
     content = content[content.index(':')+2:-2]
     content = content.strip().replace("\\u002F",'/')
-    content = re.sub(r'<.*?>','',content).split('\\n')
+    content = re.sub(r'<.*?>','',content).replace('\\n','.')
     NPs = []
 
     for sent in content:
         try:
-            # print sent
+            print sent
             chunks = chunk_sent(sent)
-            # print chunks
+            print chunks
             trees = load_iobtags(chunks)
-            # print trees
+            print trees
             nps = get_NPs(trees)
-            # print nps
+            print nps
             NPs.extend(nps)
         except:
             logging.info('errors {:} ..')
