@@ -43,13 +43,13 @@ def chunk_file(path):
 
     for sent in sent_tokenize(content):
         try:
-            print sent
+            # print sent
             chunks = chunk_sent(sent)
-            print chunks
+            # print chunks
             trees = load_iobtags(chunks)
-            print trees
+            # print trees
             nps = get_NPs(trees)
-            print nps
+            # print nps
             NPs.extend(nps)
         except:
             logging.info('errors {:} ..')
