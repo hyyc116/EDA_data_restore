@@ -33,14 +33,19 @@ def date_count_statistic():
 def parse():
     for f in os.listdir('../Pages'):
         content = open('../Pages/'+f).read().strip().replace("\\u002F",'/')
-
+        content = re.sub(r'<.*?>',' ',content).replace('\\n',' ')
+        content = re.sub(r'\s+',' ',content)
+        ## 如果有美元符号
         if '$' in content:
             salary =  extract_salary(content)
             if salary.strip()=='':
                 si = content.index('$')
-                print f+"==="+content[si-10:si+100]
+                print f+"==="+content[si-100:si+100]
             else:
                 print f+"=="+salary
+        ## 有dollor的说明
+        elif 'dollor' in content:
+            print content
 
 def extract_salary(content):
     regex=re.compile("\$\d+,?\d*\.?\d*\s?\-?t?o?\s?\$?\d+,?\d*\.?\d*\s?\/\s?\w{0,5}")
