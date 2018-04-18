@@ -53,31 +53,50 @@ def clean_salary(path):
     for line in open(path):
         line = line.strip()
         jid,salary_str = line.split('\t')
-
-        regrex = re.compile('\\$(\d+\,?\d*\.?\d*) \/(\w+)')
-        ss = []
-        for s in regrex.findall(salary_str):
-            ss.append(s)
-
-        regrex = re.compile('\\$(\d+\.?\d*) per (\w+) ')
-        for s in regrex.findall(salary_str):
-            ss.append(s)
-        
+        salary_str = re.sub(r'<.*?>',' ',salary_str).replace('\\n',' ')
+        salary_str = re.sub(r'\s+',' ',salary_str)
+        ## match $15/year $15 /hr
+        match_salary(salary_str)
         if len(ss)==0:
             print line
 
 
+def match_salary(salary_str):
 
+    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) ?\/(\w+)')
+    ss = []
+    for s in regrex.findall(salary_str):
+        ss.append(s)
+    ## match $14 - $15/year , $14-15/year
+    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) ?\- ?\\$?(\d+\,?\d*\.?\d*) ?\/(\w+)')
+    for s in regrex.findall(salary_str):
+        ss.append(s)
 
+    ## match 13 per hour
+    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) per (\w+) ?\,?\.?')
+    for s in regrex.findall(salary_str):
+        ss.append(s)
+
+    if len(ss)==0:
+        ## match $14 - $15
+        regrex = re.compile('\\$(\d+\,?\d*\.?\d*) ?\- ?\\$?(\d+\,?\d*\.?\d*)')
+        for s in regrex.findall(salary_str):
+            ss.append(s)
+
+    return ss
 
 if __name__ == '__main__':
     # date_count_statistic()
     # salary()
     # parse()
 
-    clean_salary(sys.argv[1])
+    # salary_str = '$10,000.00 to $15,000.00 /year  $19.32 - $28.62 per hour</p>\n<p><b>\nDESCRIPTION OF DUTIES:  $25-$50/hr,$30-60/hour   $15.18 - $19.09 $4,159/Month,$4,159/Month'
+    # salary_str = re.sub(r'<.*?>',' ',salary_str).replace('\\n',' ')
+    # salary_str = re.sub(r'\s+',' ',salary_str)
+    # for salary in match_salary(salary_str):
+    #     print salary
 
-    
+    clean_salary(sys.argv[1])    
 
 
 
