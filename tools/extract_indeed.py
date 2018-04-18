@@ -42,15 +42,21 @@ def extract_positions(extracted_ids_path):
 def extract_salary_from_content(content):
 
     content = content.strip().replace("\\u002F",'/')
-
+    content = re.sub(r'<.*?>',' ',content).replace('\\n',' ')
+    content = re.sub(r'\s+',' ',content)
     if '$' in content:
         salary =  extract_salary(content)
+
         if salary.strip()=='':
             si = content.index('$')
-            return content[si-10:si+100]
+            return content[si-100:si+100]
         else:
             return salary
+    elif 'dollor' in content and 'salary'  in content:
+        return content
 
+
+## 抽取salary
 def extract_salary(content):
     regex=re.compile("\$\d+,?\d*\.?\d*\s?\-?t?o?\s?\$?\d+,?\d*\.?\d*\s?\/\s?\w{0,5}")
     ss = []
