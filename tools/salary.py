@@ -202,4 +202,4 @@ if __name__ == '__main__':
     # for salary in match_salary(salary_str.lower()):
     #     print salary
 
-    # clean_salary(sys.argv[1])    
+    clean_salary(sys.argv[1])    
