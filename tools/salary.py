@@ -109,6 +109,10 @@ def match_salary(salary_str):
     for s in regrex.findall(salary_str):
         ss.append(s)
 
+    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) anually')
+    for s in regrex.findall(salary_str):
+        ss.append(s)
+
     if len(ss)!=0:
         return 'three',ss
 
@@ -118,7 +122,20 @@ def match_salary(salary_str):
         for s in regrex.findall(salary_str):
             ss.append(s)
 
-    return 'four',ss
+    if len(ss)!=0:
+        return 'four',ss
+
+    if 'salary' in salary_str:
+        regrex = re.compile('\\$?(\d+\,?\d*\.?\d*)')
+        for s in regrex.findall(salary_str):
+            ss.append(s)
+
+        if len(ss)!=0:
+            return 'five',ss
+
+    return 'no',ss
+
+
 
 if __name__ == '__main__':
     # date_count_statistic()
