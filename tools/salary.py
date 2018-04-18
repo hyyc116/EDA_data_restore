@@ -65,7 +65,7 @@ def clean_salary(path):
         if num is not None:
             # print jid+"\t"+num+"\t"+scale
             salary = convert_to_hour(num,scale)
-            print jid+"\t"+salary
+            print jid+"\t"+str(salary)
 
 
 
