@@ -57,7 +57,7 @@ def clean_salary(path):
         salary_str = re.sub(r'\s+',' ',salary_str)
         ## match $15/year $15 /hr
         tag,ss = match_salary(salary_str)
-        print tag + ss
+        print tag , ss
 
 
 def match_salary(salary_str):
