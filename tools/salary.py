@@ -56,7 +56,7 @@ def clean_salary(path):
         salary_str = re.sub(r'<.*?>',' ',salary_str).replace('\\n',' ')
         salary_str = re.sub(r'\s+',' ',salary_str)
         ## match $15/year $15 /hr
-        match_salary(salary_str)
+        ss = (salary_str)
         if len(ss)==0:
             print line
 
