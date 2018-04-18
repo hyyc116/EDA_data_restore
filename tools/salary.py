@@ -85,6 +85,10 @@ def match_salary(salary_str):
     for s in regrex.findall(salary_str):
         ss.append(s)
 
+    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) a (\w+) ?\,?\.?')
+    for s in regrex.findall(salary_str):
+        ss.append(s)
+
     if len(ss)!=0:
         return 'three',ss
 
