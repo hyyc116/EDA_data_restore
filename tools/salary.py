@@ -165,9 +165,11 @@ def convert_to_hour(salary,scale):
 
     if scale in ['hour','hr','hours','hourl'] or scale.startswith('sessi'):
         return float(salary.replace(',',''))
-    elif scale in ['week']:
+    elif scale in ['week'] or sale.startswith('weekl'):
         return float(salary.replace(',',''))/40
-    elif scale in ['month']:
+    elif scale in ['day','night']:
+        return float(salary.replace(',',''))/8
+    elif scale in ['month','mo']:
         return float(salary.replace(',',''))/40/4
     elif scale=='anoni':
         ##根据大小定义是时薪
@@ -180,7 +182,7 @@ def convert_to_hour(salary,scale):
             return salary/40/4
         else:
             return salary/52/40
-    elif scale in ['year','anual','yr'] or scale.startswith('year'):
+    elif scale in ['year','annua','yr'] or scale.startswith('year'):
         return float(salary.replace(',',''))/52/40
 
     else:
