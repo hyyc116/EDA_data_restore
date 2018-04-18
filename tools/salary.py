@@ -59,87 +59,104 @@ def clean_salary(path):
         line = line.strip()
         jid,salary_str = line.split('\t')
         salary_str = re.sub(r'<.*?>',' ',salary_str).replace('\\n',' ')
-        salary_str = re.sub(r'\s+',' ',salary_str)
-        ## match $15/year $15 /hr
-        tag,ss = match_salary(salary_str.lower())
-        # print tag , ss
-        if len(ss)==0:
+
+        num,scale = match_salary(salary_str.lower())
+        
+        if num is None:
             print line
 
 
 def match_salary(salary_str):
 
-    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) ?\/ ?(\w+)')
+    ## 第一种也是最典型的第一种， $12,000.00 / year
+    regrex = re.compile('\\$?(\d+\,?\d*\.?\d*) ?\/ ?(\w+)')
     ss = []
     for s in regrex.findall(salary_str):
         ss.append(s)
-
     if len(ss)!=0:
-        return 'one',ss
+        ## 认为一个salary的前后是相差不大的，所以无论如何变幻，只取第一个
+        ## 每一行包括两个值，一个是数字一个是scale
+        return ss[0]
 
     ## match $14 - $15/year , $14-15/year
-    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) ?\- ?\\$?(\d+\,?\d*\.?\d*) ?\/(\w+)')
+    regrex = re.compile('\\$\d+\,?\d*\.?\d* ?\- ?\\$?(\d+\,?\d*\.?\d*) ?\/ ?(\w+)')
     for s in regrex.findall(salary_str):
         ss.append(s)
 
     if len(ss)!=0:
-        return 'two',ss
+        return ss[0]
 
-    ## match 13 per hour
-    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) per (\w+) ?\,?\.?')
-    for s in regrex.findall(salary_str):
-        ss.append(s)
-
-    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) a (\w+) ?\,?\.?')
+    ## match "$13 per hour, per week, per month, per year" 
+    regrex = re.compile('\\$?(\d+\,?\d*\.?\d*)\s?per\s?(\w+)')
     for s in regrex.findall(salary_str):
         ss.append(s)
 
     if len(ss)!=0:
-        return 'three',ss
+        return ss[0]
 
-    ## match 13 per hour
+    ## match " $12 a week, a month, a year, an hour"
+    regrex = re.compile('\\$?(\d+\,?\d*\.?\d*) an? (\w+)')
+    for s in regrex.findall(salary_str):
+        ss.append(s)
+
+    if len(ss)!=0:
+        return ss[0]
+
+    ## match 13 hourly weekly monthly, anually, 
     regrex = re.compile('\\$(\d+\,?\d*\.?\d*) monthly')
     for s in regrex.findall(salary_str):
-        ss.append(s)
+        ss.append([s[0],'month'])
+
+    if len(ss)!=0:
+        return ss[0]
 
     regrex = re.compile('\\$(\d+\,?\d*\.?\d*) yearly')
     for s in regrex.findall(salary_str):
-        ss.append(s)
+        ss.append([s[0],'year'])
+
+    if len(ss)!=0:
+        return ss[0]
 
     regrex = re.compile('\\$(\d+\,?\d*\.?\d*) hourly')
     for s in regrex.findall(salary_str):
-        ss.append(s)
+        ss.append([s[0],'hour'])
+
+    if len(ss)!=0:
+        return ss[0]
 
     regrex = re.compile('\\$(\d+\,?\d*\.?\d*) weekly')
     for s in regrex.findall(salary_str):
-        ss.append(s)
+        ss.append([s[0],'week'])
+
+    if len(ss)!=0:
+        return ss[0]
 
     regrex = re.compile('\\$(\d+\,?\d*\.?\d*) anually')
     for s in regrex.findall(salary_str):
-        ss.append(s)
+        ss.append([s[0],'year'])
 
     if len(ss)!=0:
-        return 'three',ss
+        return ss[0]
 
     if len(ss)==0:
         ## match $14 - $15
-        regrex = re.compile('\\$(\d+\,?\d*\.?\d*) ?\- ?\\$?(\d+\,?\d*\.?\d*)')
+        regrex = re.compile('\\$\d+\,?\d*\.?\d* ?\- ?\\$?(\d+\,?\d*\.?\d*)')
         for s in regrex.findall(salary_str):
-            ss.append(s)
+            ss.append([s[0],'anoni'])
 
-    if len(ss)!=0:
-        return 'four',ss
+        if len(ss)!=0:
+            return ss[0]
 
     if 'salary' in salary_str:
         regrex = re.compile('\\$?(\d+\,?\d*\.?\d*)')
         for s in regrex.findall(salary_str):
-            ss.append(s)
+            ss.append([s[0],'anoni'])
+
 
         if len(ss)!=0:
-            return 'five',ss
+            return ss[0]
 
-    return 'no',ss
-
+    return None,None
 
 
 if __name__ == '__main__':
@@ -147,13 +164,13 @@ if __name__ == '__main__':
     # salary()
     # parse()
 
-    # salary_str = '$10,000.00 to $15,000.00 /year  $19.32 - $28.62 per hour</p>\n<p><b>\nDESCRIPTION OF DUTIES:  $25-$50/hr,$30-60/hour   $15.18 - $19.09 $4,159/Month,$4,159/Month'
+    # salary_str = '$19.32 hourly hour DESCRIPTION OF DUTIES:    $15.18 - $19.09 '
     # salary_str = re.sub(r'<.*?>',' ',salary_str).replace('\\n',' ')
     # salary_str = re.sub(r'\s+',' ',salary_str)
-    # for salary in match_salary(salary_str):
+    # for salary in match_salary(salary_str.lower()):
     #     print salary
 
-    clean_salary(sys.argv[1])    
+    # clean_salary(sys.argv[1])    
 
 
 
