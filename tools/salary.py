@@ -2,7 +2,7 @@
 
 import sys
 import os
-from db_utils import *
+from db_util import *
 from collections import defaultdict
 import re
 # from bs4 import BeautifulSoup as BS
@@ -49,12 +49,59 @@ def extract_salary(content):
         ss.append(s)
     return ','.join(ss)
 
+def clean_salary(path):
+    for line in open(path):
+        line = line.strip()
+        jid,salary_str = line.split('\t')
+
+        regrex = re.compile('\\$(\d+\,?\d*\.?\d*) \/(\w+)')
+        ss = []
+        for s in regrex.findall(salary_str):
+            ss.append(s)
+
+        regrex = re.compile('\\$(\d+\.?\d*) per (\w+) ')
+        for s in regrex.findall(salary_str):
+            ss.append(s)
+        
+        if len(ss)==0:
+            print line
+
+
+
 
 
 if __name__ == '__main__':
     # date_count_statistic()
     # salary()
-    parse()
+    # parse()
+
+    salary_str = '$10,000.00 to $15,000.00 /year  $19.32 - $28.62 per hour</p>\n<p><b>\nDESCRIPTION OF DUTIES:'
+    salary_str = re.sub(r'<.*?>',' ',salary_str).replace('\\n',' ')
+    salary_str = re.sub(r'\s+',' ',salary_str)
+    print salary_str
+
+    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) \/(\w+)')
+    ss = []
+    for s in regrex.findall(salary_str):
+        print s
+        ss.append(s)
+
+    regrex = re.compile('\\$(\d+\.?\d*) per (\w+) ')
+    ss = []
+    for s in regrex.findall(salary_str):
+        print s
+        ss.append(s)
+
+    
+
+
+
+
+
+
+
+
+
 
 
 

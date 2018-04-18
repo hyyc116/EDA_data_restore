@@ -1,158 +1,217 @@
 #coding:utf-8
 from db_util import *
 
-def store_data():
-    def store_state():
-        ## store state data into database
-        rows = []
-        abbr_state = {}
-        for line in open('state.txt'):
-            line = line.strip()
-            name,abbr = line.split(",")
-            name = name.strip()
-            rows.append([name,abbr])
-            abbr_state[abbr] = name
+def store_state():
+    ## store state data into database
+    rows = []
+    abbr_state = {}
+    for line in open('../data/state.txt'):
+        line = line.strip()
+        name,abbr = line.split(",")
+        name = name.strip()
+        rows.append([name,abbr])
+        abbr_state[abbr] = name
 
-        query_op = dbop()
-        insert_sql='insert into state(name,abbreviation) values (%s,%s)'
+    query_op = dbop()
+    insert_sql='insert into state(name,abbreviation) values (%s,%s)'
 
-        query_op.insert_database(insert_sql,rows)
+    query_op.insert_database(insert_sql,rows)
 
-        query_op.close_db()
-        return abbr_state
-
-    def store_county():
-        query_op = dbop()
-        sql = 'select id,name from state'
-        state_name_id = {}
-        for sid,name in query_op.query_database(sql):
-            state_name_id[name] = sid
-
-        ## store county 
-        cf = open('us_zipcode_list.csv')
-        cf.readline()
-        state_county = defaultdict(list)
-        for line in cf:
-            line = line.strip()
-            splits = line.split(',')
-            state,county = splits[0],splits[3]
-            state_county[state].append(county)
-
-        insert_sql = 'insert into county(name,sid) values (%s,%s)'
-        rows=[]
-        for state in state_county.keys():
-            print state
-
-            sid = state_name_id.get(state,-1)
-            if sid==-1:
-                continue
-            counties = set(state_county[state])
-
-            for county in counties:
-                rows.append([county,sid])
-
-        query_op.insert_database(insert_sql,rows)
-
-        sql = 'select id,name,sid from county'
-
-        state_county_id = defaultdict(dict)
-        for cid,county,sid in query_op.query_database(sql):
-            state_county_id[sid][county.lower()]=cid
-
-        query_op.close_db()
-
-        return state_name_id,state_county_id
-
-    def store_ye(abbr_state,state_name_id,state_county_id):
-
-        cf = open('county_add_missing_data.txt')
-
-        titles = cf.readline().strip().split("\t")[4:]
+    query_op.close_db()
+    return abbr_state
 
 
-        cols=[]
-        for title in titles:
-            col = title.split(':')[0].replace('-','').lower()
-            if col=='change':
-                col='changes'
-            cols.append(col)
-        cols = list(set(cols))
-        state_county_year_data = defaultdict(lambda:defaultdict(dict))
-        for line in cf:
-            line = line.strip()
-            splits = line.split('\t')
+def store_county_and_city():
+    query_op = dbop()
+    sql = 'select id,name from state'
+    state_id = {}
+    sid_state = {}
+    for sid,name in query_op.query_database(sql):
+        state_id[name] = sid
+        sid_state[sid] = name
 
-            year = int(splits[0])
-            county = splits[1][:splits[1].index('(')].strip().lower()
-            state = splits[2]
+    stateset = set(state_id.keys())
+    logging.info('number of states is {:}.'.format(len(state_id.keys())))
 
-            state_county_year_data[state][county][year] = splits[4:]
+    ## 存储county 以及 city
+    cf = open('../data/us_zipcode_list.csv')
+    cf.readline()
+    state_county_city = defaultdict(lambda:defaultdict(list))
+    for line in cf:
+        line = line.strip()
+        splits = line.split(',')
+        state,city,county = splits[0],splits[2],splits[3]
 
-        query_op = dbop()
-        ye_insert_op = dbop()
-        ye_insert_sql = 'insert into ye(year,cid,{:}) values(%s,%s,{:})'.format(','.join(cols),','.join(['%s']*len(cols)))
-        # print ye_insert_sql
-        for state in state_county_year_data.keys():
+        ## 如果不在53个州以内
+        if state not in stateset:
+            continue
 
-            if state in state_name_id.keys():
-                    state_id = state_name_id[state]
+        state_county_city[state][county].append(city)
+
+    logging.info('there are {:} states in state county relations.'.format(len(state_county_city.keys())))
+
+    county_rows = []
+    city_rows = []
+    for state in state_county_city.keys():
+        sid = state_id[state]
+        for county in state_county_city[state].keys():
+            county_rows.append([county,sid])
+            for city in state_county_city[state][county]:
+                city_rows.append([sid,county,city])
+    ## 存储county
+    insert_sql = 'insert into county(name,sid) values (%s,%s)'
+    query_op.insert_database(insert_sql,county_rows)
+
+    ## 读取county的id
+    county_id = {}
+    sql = 'select id,name,sid from county'
+    sid_county_id = defaultdict(dict)
+    for cid,county,sid in query_op.query_database(sql):
+        sid_county_id[sid][county] = cid
+
+    new_city_rows = []
+    for sid,county,city in city_rows:
+        new_city_rows.append([sid,sid_county_id[sid][county],city])
+
+    ## 存储city
+    insert_sql = 'insert into city(sid,ctid,name) values (%s,%s,%s)'
+    query_op.insert_database(insert_sql,new_city_rows)
+
+    ## 读取city的id
+    countyid_sid = {}
+    cityid_sid = {}
+    cityid_countyid = {}
+    ## 从city中读取state county city之间的关系
+    sql = 'select id,ctid,sid from city'
+    for cityid,countyid,sid in query_op.query_database(sql):
+        countyid_sid[countyid] = sid
+        cityid_countyid[cityid] = countyid
+        cityid_sid[cityid] = sid
+
+
+    ## state county
+    insert_sql = 'insert into state_county(cid,sid) values (%s,%s)'
+    new_rows = []
+    for countyid in countyid_sid.keys():
+        new_rows.append([countyid,countyid_sid[countyid]])
+    query_op.insert_database(insert_sql,new_rows)
+
+
+    ## state city
+    insert_sql = 'insert into state_city(cid,sid) values (%s,%s)'
+    new_rows = []
+    for cityid in cityid_sid.keys():
+        new_rows.append([cityid,cityid_sid[cityid]])
+    query_op.insert_database(insert_sql,new_rows)
+
+    ## county city
+    insert_sql = 'insert into county_city(cid,ctid) values (%s,%s)'
+    new_rows = []
+    for cityid in cityid_countyid.keys():
+        new_rows.append([cityid,cityid_countyid[cityid]])
+    query_op.insert_database(insert_sql,new_rows)
+
+    query_op.close_db()
+
+def store_ye():
+    cf = open('../data/county_add_missing_data.txt')
+    titles = cf.readline().strip().split("\t")[4:]
+
+    cols=[]
+    for title in titles:
+        col = title.split(':')[0].replace('-','').lower()
+        if col=='change':
+            col='changes'
+        cols.append(col)
+    cols = list(set(cols))
+    state_county_year_data = defaultdict(lambda:defaultdict(dict))
+    for line in cf:
+        line = line.strip()
+        splits = line.split('\t')
+
+        year = int(splits[0])
+        county = splits[1][:splits[1].index('(')].strip().lower()
+        state = splits[2]
+
+        state_county_year_data[state][county][year] = splits[4:]
+
+    query_op = dbop()
+
+    sql = 'select id,name,abbreviation from state'
+    state_id = {}
+    abbr_id = {}
+    for sid,name,abbreviation in query_op.query_database(sql):
+        state_id[name] = sid
+        abbr_id[abbreviation] = sid
+
+    sql = 'select id,name,sid from county'
+    sid_county_id = defaultdict(dict)
+    for cid,county,sid in query_op.query_database(sql):
+        sid_county_id[sid][county.lower()] = cid
+
+
+    ye_insert_op = dbop()
+    ye_insert_sql = 'insert into ye(year,cid,sid,{:}) values(%s,%s,%s,{:})'.format(','.join(cols),','.join(['%s']*len(cols)))
+    # print ye_insert_sql
+    for state in state_county_year_data.keys():
+
+        if state in state_id.keys():
+                sid = state_id[state]
+        else:
+            if state in abbr_id.keys():
+                sid = abbr_id[state]
             else:
-                if state in abbr_state.keys():
-                    state_name = abbr_state[state]
-                    state_id = state_name_id[state_name]
-                else:
-                    print 'error',state
-                    continue
+                print 'error',state
+                continue
 
-            for county in state_county_year_data[state].keys():
+        for county in state_county_year_data[state].keys():
 
-                # print state_county_id[state_id]
-                cid = state_county_id[state_id].get(county,-1)
-                if cid==-1:
-                    continue
+            # print sid_county_id[state_id]
+            cid = sid_county_id[sid].get(county.lower(),-1)
+            if cid==-1:
+                logging.info('Error county {:}-{:}.'.format(county,state))
+                continue
 
 
-                for year in state_county_year_data[state][county].keys():
-                    logging.info('{:},{:},{:}....'.format(state,county,year))
+            for year in state_county_year_data[state][county].keys():
+                logging.info('{:},{:},{:}....'.format(state,county,year))
 
-                    attrs = state_county_year_data[state][county][year]
-                    col_id = {}
-                    col_subtype_attr_values = defaultdict(lambda:defaultdict(dict))
-                    ## 对于每一列的attrbute， 存储wei attr
-                    for i,attr in enumerate(attrs):
-                        title = titles[i]
-                        col = title.split(':')[0].replace('-','').lower()
-                        if col=='change':
-                            col = 'changes'
+                attrs = state_county_year_data[state][county][year]
+                col_id = {}
+                col_subtype_attr_values = defaultdict(lambda:defaultdict(dict))
+                ## 对于每一列的attrbute， 存储wei attr
+                for i,attr in enumerate(attrs):
+                    title = titles[i]
+                    col = title.split(':')[0].replace('-','').lower()
+                    if col=='change':
+                        col = 'changes'
 
-                        subtype = title.split(':')[1]
-                        attrt = title.split(':')[2]
-                        col_subtype_attr_values[col][subtype][attrt]=attr
+                    subtype = title.split(':')[1]
+                    attrt = title.split(':')[2]
+                    col_subtype_attr_values[col][subtype][attrt]=attr
 
-                    for col in col_subtype_attr_values.keys():
-                        for subtype in col_subtype_attr_values[col].keys():
-                            percent = col_subtype_attr_values[col][subtype]['attr_of_total']
-                            value = col_subtype_attr_values[col][subtype]['attr_value']
-                            attr_insert_sql = 'insert into attribute(subtype,value,percent) values (%s,%s,%s)'
-                            aid = query_op.insert_sql(attr_insert_sql,[subtype,value,percent])
-                            col_id[col] = aid
+                for col in col_subtype_attr_values.keys():
+                    for subtype in col_subtype_attr_values[col].keys():
+                        percent = col_subtype_attr_values[col][subtype]['attr_of_total']
+                        value = col_subtype_attr_values[col][subtype]['attr_value']
+                        attr_insert_sql = 'insert into attribute(subtype,value,percent) values (%s,%s,%s)'
+                        aid = query_op.insert_sql(attr_insert_sql,[subtype,value,percent])
+                        col_id[col] = aid
 
-                    values = [year,cid]
-                    for col in cols:
-                        values.append(col_id[col])
-                    
-                    ye_insert_op.batch_insert(ye_insert_sql,values,2000,is_auto=False,end=False)
+                values = [year,cid,sid]
+                for col in cols:
+                    values.append(col_id[col])
+                
+                ye_insert_op.batch_insert(ye_insert_sql,values,2000,is_auto=False,end=False)
 
-        ye_insert_op.batch_insert(ye_insert_sql,None,2000,is_auto=False,end=True)
+    ye_insert_op.batch_insert(ye_insert_sql,None,2000,is_auto=False,end=True)
 
-        query_op.close_db()
-        ye_insert_op.close_db()
-
-    abbr_state = store_state()
-    state_name_id,state_county_id = store_county()
-    store_ye(abbr_state,state_name_id,state_county_id)
-
+    query_op.close_db()
+    ye_insert_op.close_db()
 
 
 if __name__ == '__main__':
-    store_data()
+    store_state()
+    store_county_and_city()
+    store_ye()
+

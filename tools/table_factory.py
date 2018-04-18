@@ -10,7 +10,6 @@ def create_tables():
         DROP DATABASE EDA_DATA;
         CREATE DATABASE `EDA_DATA` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
         USE EDA_DATA;
-        DROP TABLE IF EXISTS `state`;
         '''
 
     for line in state_sql.split('\n'):
@@ -32,6 +31,8 @@ def create_tables():
         create table `county`(
             `id` int(10) NOT NULL AUTO_INCREMENT,
             `name` varchar(30) NOT NULL,
+            `sid` int(10) NOT NULL,
+            FOREIGN KEY(`sid`) REFERENCES state(`id`),
             PRIMARY KEY(`id`)
         );
         '''
@@ -42,6 +43,10 @@ def create_tables():
         create table `city`(
             `id` int(10) NOT NULL AUTO_INCREMENT,
             `name` varchar(30) NOT NULL,
+            `ctid` int(10) NOT NULL,
+            FOREIGN KEY(`ctid`) REFERENCES county(`id`),
+            `sid` int(10) NOT NULL,
+            FOREIGN KEY (`sid`) REFERENCES state(`id`),
             PRIMARY KEY(`id`)
         );
         '''
@@ -62,30 +67,6 @@ def create_tables():
         '''
     query_op.query_database(sc_sql)
 
-    cs_sql = '''
-        create table `county_state`(
-            `id` int(10) NOT NULL AUTO_INCREMENT,
-            `cid` int(10) NOT NULL,
-            FOREIGN KEY (`cid`) REFERENCES county(`id`),
-            `sid` int(10) NOT NULL,
-            FOREIGN KEY (`sid`) REFERENCES state(`id`),
-            PRIMARY KEY(`id`)
-        );
-        '''
-    query_op.query_database(cs_sql)
-
-    ## city state
-    cs_sql = '''
-        create table `city_state`(
-            `id` int(10) NOT NULL AUTO_INCREMENT,
-            `cid` int(10) NOT NULL,
-            FOREIGN KEY (`cid`) REFERENCES city(`id`),
-            `sid` int(10) NOT NULL,
-            FOREIGN KEY (`sid`) REFERENCES state(`id`),
-            PRIMARY KEY(`id`)
-        );
-        '''
-    query_op.query_database(cs_sql)
 
     ## state city
     cs_sql = '''
@@ -100,18 +81,6 @@ def create_tables():
         '''
     query_op.query_database(cs_sql)
 
-    ## city county
-    cs_sql = '''
-        create table `city_county`(
-            `id` int(10) NOT NULL AUTO_INCREMENT,
-            `cid` int(10) NOT NULL,
-            FOREIGN KEY (`cid`) REFERENCES city(`id`),
-            `ctid` int(10) NOT NULL,
-            FOREIGN KEY (`ctid`) REFERENCES county(`id`),
-            PRIMARY KEY(`id`)
-        );
-        '''
-    query_op.query_database(cs_sql)
 
     ## county city
     cs_sql = '''
@@ -141,6 +110,10 @@ def create_tables():
         create table `ye`(
             `id` int(10) NOT NULL AUTO_INCREMENT,
             `year` int(4) NOT NULL,
+            `cid` int(10) NOT NULL,
+            FOREIGN KEY (`cid`) REFERENCES county(`id`),
+            `sid` int(10) NOT NULL,
+            FOREIGN KEY (`sid`) REFERENCES state(`id`),
             `allsales` int(10) DEFAULT NULL,
             FOREIGN KEY (`allsales`) REFERENCES attribute(`id`),
             `totalgained` int(10) DEFAULT NULL,
@@ -184,6 +157,7 @@ def create_tables():
     job_sql = '''
         create table `job`(
             `id` int(10) NOT NULL AUTO_INCREMENT,
+            `cityid` int(10) NOT NULL,
             `title` varchar(30) NOT NULL,
             `company` varchar(10) NOT NULL,
             `position` varchar(10) NOT NULL,
