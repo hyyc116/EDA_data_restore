@@ -75,22 +75,7 @@ if __name__ == '__main__':
     # salary()
     # parse()
 
-    salary_str = '$10,000.00 to $15,000.00 /year  $19.32 - $28.62 per hour</p>\n<p><b>\nDESCRIPTION OF DUTIES:'
-    salary_str = re.sub(r'<.*?>',' ',salary_str).replace('\\n',' ')
-    salary_str = re.sub(r'\s+',' ',salary_str)
-    print salary_str
-
-    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) \/(\w+)')
-    ss = []
-    for s in regrex.findall(salary_str):
-        print s
-        ss.append(s)
-
-    regrex = re.compile('\\$(\d+\.?\d*) per (\w+) ')
-    ss = []
-    for s in regrex.findall(salary_str):
-        print s
-        ss.append(s)
+    clean_salary(sys.argv[1])
 
     
 
