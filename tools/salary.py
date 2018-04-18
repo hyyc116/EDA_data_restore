@@ -63,7 +63,10 @@ def clean_salary(path):
         num,scale = match_salary(salary_str.lower())
         
         if num is not None:
-            print jid+"\t"+num+"\t"+scale
+            # print jid+"\t"+num+"\t"+scale
+            salary = convert_to_hour(num,scale)
+            print jid+"\t"+salary
+
 
 
 def match_salary(salary_str):
@@ -158,6 +161,35 @@ def match_salary(salary_str):
 
     return None,None
 
+def convert_to_hour(salary,scale):
+
+    if scale in ['hour','hr','hours','hourl'] or scale.startswith('sessi'):
+        return float(salary.replace(',',''))
+    elif scale in ['week']:
+        return float(salary.replace(',',''))/40
+    elif scale in ['month']:
+        return float(salary.replace(',',''))/40/4
+    elif scale=='anoni':
+        ##根据大小定义是时薪
+        salary = float(salary.replace(',',''))
+        if salary < 300:
+            return salary
+        elif salary < 1600:
+            return salary/40
+        elif salary < 10000:
+            return salary/40/4
+        else:
+            return salary/52/40
+    elif scale in ['year','anual','yr'] or scale.startswith('year'):
+        return float(salary.replace(',',''))/52/40
+
+    else:
+        logging.info(salary,scale)
+
+
+
+
+
 
 if __name__ == '__main__':
     # date_count_statistic()
@@ -170,4 +202,4 @@ if __name__ == '__main__':
     # for salary in match_salary(salary_str.lower()):
     #     print salary
 
-    clean_salary(sys.argv[1])    
+    # clean_salary(sys.argv[1])    
