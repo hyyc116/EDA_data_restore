@@ -62,8 +62,8 @@ def clean_salary(path):
 
         num,scale = match_salary(salary_str.lower())
         
-        if num is None:
-            print line
+        if num is not None:
+            print jid+"\t"+num+"\t"+scale
 
 
 def match_salary(salary_str):
