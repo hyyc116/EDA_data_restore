@@ -184,7 +184,7 @@ def convert_to_hour(salary,scale):
         return float(salary.replace(',',''))/52/40
 
     else:
-        logging.info(salary,scale)
+        logging.info("None parsed: {:},{:}".format(salary,scale))
 
 
 
