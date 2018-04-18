@@ -165,7 +165,7 @@ def convert_to_hour(salary,scale):
 
     if scale in ['hour','hr','hours','hourl'] or scale.startswith('sessi'):
         return float(salary.replace(',',''))
-    elif scale in ['week'] or sale.startswith('weekl'):
+    elif scale in ['week'] or scale.startswith('weekl'):
         return float(salary.replace(',',''))/40
     elif scale in ['day','night']:
         return float(salary.replace(',',''))/8
