@@ -56,9 +56,8 @@ def clean_salary(path):
         salary_str = re.sub(r'<.*?>',' ',salary_str).replace('\\n',' ')
         salary_str = re.sub(r'\s+',' ',salary_str)
         ## match $15/year $15 /hr
-        ss = (salary_str)
-        if len(ss)==0:
-            print line
+        tag,ss = (salary_str)
+        print tag + ss
 
 
 def match_salary(salary_str):
@@ -67,15 +66,25 @@ def match_salary(salary_str):
     ss = []
     for s in regrex.findall(salary_str):
         ss.append(s)
+
+    if len(ss)!=0:
+        return 'one',ss
+
     ## match $14 - $15/year , $14-15/year
     regrex = re.compile('\\$(\d+\,?\d*\.?\d*) ?\- ?\\$?(\d+\,?\d*\.?\d*) ?\/(\w+)')
     for s in regrex.findall(salary_str):
         ss.append(s)
 
+    if len(ss)!=0:
+        return 'two',ss
+
     ## match 13 per hour
     regrex = re.compile('\\$(\d+\,?\d*\.?\d*) per (\w+) ?\,?\.?')
     for s in regrex.findall(salary_str):
         ss.append(s)
+
+    if len(ss)!=0:
+        return 'three',ss
 
     if len(ss)==0:
         ## match $14 - $15
@@ -83,7 +92,7 @@ def match_salary(salary_str):
         for s in regrex.findall(salary_str):
             ss.append(s)
 
-    return ss
+    return 'four',ss
 
 if __name__ == '__main__':
     # date_count_statistic()
