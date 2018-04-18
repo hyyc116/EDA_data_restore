@@ -56,7 +56,7 @@ def clean_salary(path):
         salary_str = re.sub(r'<.*?>',' ',salary_str).replace('\\n',' ')
         salary_str = re.sub(r'\s+',' ',salary_str)
         ## match $15/year $15 /hr
-        tag,ss = match_salary(salary_str)
+        tag,ss = match_salary(salary_str.lower())
         # print tag , ss
         if len(ss)==0:
             print line
@@ -64,7 +64,7 @@ def clean_salary(path):
 
 def match_salary(salary_str):
 
-    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) ?\/(\w+)')
+    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) ?\/ ?(\w+)')
     ss = []
     for s in regrex.findall(salary_str):
         ss.append(s)
@@ -82,6 +82,26 @@ def match_salary(salary_str):
 
     ## match 13 per hour
     regrex = re.compile('\\$(\d+\,?\d*\.?\d*) per (\w+) ?\,?\.?')
+    for s in regrex.findall(salary_str):
+        ss.append(s)
+
+    if len(ss)!=0:
+        return 'three',ss
+
+    ## match 13 per hour
+    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) monthly')
+    for s in regrex.findall(salary_str):
+        ss.append(s)
+
+    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) yearly')
+    for s in regrex.findall(salary_str):
+        ss.append(s)
+
+    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) hourly')
+    for s in regrex.findall(salary_str):
+        ss.append(s)
+
+    regrex = re.compile('\\$(\d+\,?\d*\.?\d*) weekly')
     for s in regrex.findall(salary_str):
         ss.append(s)
 
