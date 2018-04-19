@@ -170,11 +170,15 @@ def store_ye():
         for county in state_county_year_data[state].keys():
 
             # print sid_county_id[state_id]
-            if '-' in county:
-                county = county.split('-')[0]
 
             cid = sid_county_id[sid].get(county.lower(),-1)
             if cid==-1:
+                if '-' in county:
+                    county = county.split('-')[0]
+                    cid = sid_county_id[sid].get(county.lower(),-1)
+
+            if cid==-1:
+                
                 logging.info('Error county {:}-{:}.'.format(county,state))
                 continue
 
