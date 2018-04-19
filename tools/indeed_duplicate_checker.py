@@ -125,7 +125,11 @@ def parse_skill(path):
     skill_list = []
     for line in open(path):
         line = line.strip()
-        jid,skills = line.split('\t')
+        splits  = line.split('\t')
+        if len(splits)<2:
+        	continue
+        jid = splits[0]
+        skills = ','.join(splits[1:])
 
         ## 首先统计高频出现的NP
 
