@@ -122,34 +122,37 @@ def parse_location(location):
 
 ### 解析每一个job所需要的skill,假设一个job需要多个技能
 def parse_skill(path):
-    skill_list = []
+    word_dict = defaultdict(list)
     for line in open(path):
         line = line.strip()
         splits  = line.split('\t')
         if len(splits)<2:
-        	continue
+            continue
         jid = splits[0]
         skills = ','.join(splits[1:])
 
         ## 首先统计高频出现的NP
-
+        skill_words = []
         for skill in skills.split(','):
             if hasnum(skill) or len(skill)<4:
                 continue
 
-            skill_list.append(skill.lower())
-
-    skill_counter = Counter(skill_list)
+            for skill_word in skill.split():
+                skill_words.append(skill_word.lower())
+        sc = Counter(skill_words)
+        for word in sc.keys():
+            word_dict[word].append([jid,sc[word]])
 
     lines = []
-    # skill_counter = []
-    for skill in sorted(skill_counter.keys(),key=lambda x:skill_counter[x],reverse=True):
-        # if skill_counter[skill]<100:
-        #     continue
-        lines.append('{:}\t{:}'.format(skill,skill_counter[skill]))
-        # skill_counter.append(skill)
+    for word in word_dict.keys():
+        df = word_dict[word]
+        for jid,freq in df:
+            tfidf = freq/float(len(df))
 
-    open('data/skill_counter.txt','w').write('\n'.join(lines))
+            lines.append('{:}\t{:}\t{:}'.format(jid,word,tfidf))
+
+    open('data/job_word_tfidf.txt','w').write('\n'.join(lines))
+
 
 if __name__ == '__main__':
     # check_data_duplicate()
