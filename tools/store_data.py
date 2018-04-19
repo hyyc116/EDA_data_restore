@@ -238,7 +238,9 @@ def store_indeed():
 
         ## 根据city和state联立起来
 
-        cid = state_city_cid[state][city.lower()]
+        cid = state_city_cid[state].get(city.lower(),-1)
+        if cid==-1:
+            print company,city,state
 
         row = [_id,company,cid,position,postype,publishdate,salary]
 
