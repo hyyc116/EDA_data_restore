@@ -30,7 +30,7 @@ def check_data_duplicate():
 
 ## 读取已经parse出来的title中的Np，并且根据
 def parse_position(path):
-	logging.info('loading jid positions ....')
+    logging.info('loading jid positions ....')
     jid_position = {}
     for line in open(path):
         line = line.strip()
