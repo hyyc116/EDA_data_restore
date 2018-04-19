@@ -156,7 +156,7 @@ def parse_skill(path):
 
     for jid in jid_word_tfidf.keys():
     	word_tfidf = jid_word_tfidf[jid]
-    	for word in sorted(word_tfidf.keys(),key=lambda x:word_tfidf[x],reverse=True):
+    	for word in sorted(word_tfidf.keys(),key=lambda x:word_tfidf[x],reverse=True)[:5]:
             lines.append('{:}\t{:}\t{:}'.format(jid,word,word_tfidf[word]))
 
     open('data/job_word_tfidf.txt','w').write('\n'.join(lines))
