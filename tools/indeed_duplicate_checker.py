@@ -203,7 +203,9 @@ if __name__ == '__main__':
 
     # parse_position(sys.argv[1])
 
-    parse_skill(sys.argv[1])
+    # parse_skill(sys.argv[1])
+
+    export_indeed_data()
 
 
 
