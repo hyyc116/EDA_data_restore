@@ -98,6 +98,12 @@ def create_tables():
     attrs_sql = '''
         create table `attribute`(
             `id` int(10) NOT NULL AUTO_INCREMENT,
+            `cid` int(10) NOT NULL,
+            `year` int(4) NOT NULL,
+            FOREIGN KEY(`cid`) REFERENCES county(`id`),
+            `sid` int(10) NOT NULL,
+            FOREIGN KEY(`sid`) REFERENCES state(`id`),
+            `toptype` varchar(50) NOT NULL,
             `subtype` varchar(50) NOT NULL,
             `value` varchar(50) NOT NULL,
             `percent` varchar(50) NOT NULL,

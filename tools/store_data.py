@@ -151,11 +151,13 @@ def store_ye():
         sid_county_id[sid][county.lower()] = cid
 
 
-    ye_insert_op = dbop()
     ye_insert_sql = 'insert into ye(year,cid,sid,{:}) values(%s,%s,%s,{:})'.format(','.join(cols),','.join(['%s']*len(cols)))
     # print ye_insert_sql
-    for state in state_county_year_data.keys():
+    ##首先将数据存储到attr里面去
+    attr_insert_sql = 'insert into attribute(cid,sid,year,toptype,subtype,value,percent) values (%s,%s,%s,%s,%s,%s,%s)'
 
+    for state in state_county_year_data.keys():
+        logging.info('Save state {:} ...'.format(state))
         if state in state_id.keys():
                 sid = state_id[state]
         else:
@@ -168,15 +170,18 @@ def store_ye():
         for county in state_county_year_data[state].keys():
 
             # print sid_county_id[state_id]
+            if '-' in county:
+                county = county.split('-')[0]
+
             cid = sid_county_id[sid].get(county.lower(),-1)
             if cid==-1:
                 logging.info('Error county {:}-{:}.'.format(county,state))
                 continue
 
 
-            for year in state_county_year_data[state][county].keys():
-                logging.info('{:},{:},{:}....'.format(state,county,year))
 
+            for year in state_county_year_data[state][county].keys():
+                # logging.info('{:},{:},{:}....'.format(state,county,year))
                 attrs = state_county_year_data[state][county][year]
                 col_id = {}
                 col_subtype_attr_values = defaultdict(lambda:defaultdict(dict))
@@ -195,20 +200,12 @@ def store_ye():
                     for subtype in col_subtype_attr_values[col].keys():
                         percent = col_subtype_attr_values[col][subtype]['attr_of_total']
                         value = col_subtype_attr_values[col][subtype]['attr_value']
-                        attr_insert_sql = 'insert into attribute(subtype,value,percent) values (%s,%s,%s)'
-                        aid = query_op.insert_sql(attr_insert_sql,[subtype,value,percent])
-                        col_id[col] = aid
+                        ### 这里对于每一个属性都会存一个数值，导致了整个的一个问题，所以首先将attr所有都存起来，然后再存ye
+                        row  = [cid,sid,year,col,subtype,value,percent]
+                        query_op.batch_insert(attr_insert_sql,row,10000,is_auto=False,end=False)
 
-                values = [year,cid,sid]
-                for col in cols:
-                    values.append(col_id[col])
-                
-                ye_insert_op.batch_insert(ye_insert_sql,values,5000,is_auto=False,end=False)
-
-    ye_insert_op.batch_insert(ye_insert_sql,None,5000,is_auto=False,end=True)
-
+    query_op.batch_insert(attr_insert_sql,None,10000,is_auto=False,end=True)
     query_op.close_db()
-    ye_insert_op.close_db()
 
 
 def store_indeed():
