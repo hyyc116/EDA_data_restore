@@ -154,7 +154,7 @@ def hasnum(inputString):
 ###将所有条目的location，parse成state city的样式，存在zipcode
 def parse_location(location):
     city,state  = location.strip().replace(', ','===').split()[0].split('===')
-    pritn city,state
+    print city,state
     return city,state
 
 
