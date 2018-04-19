@@ -70,7 +70,7 @@ def parse_position(path):
 
     lines = []
     for job in sorted(job_counter.keys(),key=lambda x:job_counter[x],reverse=True):
-        if job_counter[job]>1:
+        if job_counter[job]<100:
             continue
         lines.append('{:}\t{:}'.format(job,job_counter[job]))
 
