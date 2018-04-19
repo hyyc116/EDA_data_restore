@@ -142,12 +142,12 @@ def parse_skill(path):
     skill_counter = Counter(skill_list)
 
     lines = []
-    skill_counter = []
+    # skill_counter = []
     for skill in sorted(skill_counter.keys(),key=lambda x:skill_counter[x],reverse=True):
-        if skill_counter[skill]<100:
-            continue
+        # if skill_counter[skill]<100:
+        #     continue
         lines.append('{:}\t{:}'.format(skill,skill_counter[skill]))
-        skill_counter.append(skill)
+        # skill_counter.append(skill)
 
     open('data/skill_counter.txt','w').write('\n'.join(lines))
 
