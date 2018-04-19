@@ -78,6 +78,7 @@ def parse_position(path):
 
     open('data/job_words.txt','w').write('\n'.join(lines))
 
+    job_words = set(job_words)
     ### 如果NP中包含job word，那么将这个position作为该条记录的pos，并且将job的类型设置为job words
     job_pos_type = []
     for jid in jid_position.keys():
