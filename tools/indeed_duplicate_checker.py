@@ -14,7 +14,7 @@ def export_indeed_data():
 
     for line in open('extracted_salary.txt'):
         jid,salary = line.split('\t')
-        jid[jid.strip()] = float(salary)
+        jid_salary[jid.strip()] = float(salary)
 
     ## 加载 jid pos的文件
     jid_pos_type = {}
