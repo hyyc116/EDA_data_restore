@@ -150,7 +150,9 @@ def parse_skill(path):
 if __name__ == '__main__':
     # check_data_duplicate()
 
-    parse_position(sys.argv[1])
+    # parse_position(sys.argv[1])
+
+    parse_skill(sys.argv[1])
 
 
 
