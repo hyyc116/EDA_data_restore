@@ -17,7 +17,7 @@ def export_indeed_data():
 
         if salary is None or salary.strip()=='None':
         	continue
-        print salary
+        # print salary
         jid_salary[jid.strip()] = float(salary)
 
     ## 加载 jid pos的文件
