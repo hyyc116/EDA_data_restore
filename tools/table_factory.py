@@ -112,40 +112,40 @@ def create_tables():
         '''
     query_op.query_database(attrs_sql)
         
-    ye_sql = '''
-        create table `ye`(
-            `id` int(10) NOT NULL AUTO_INCREMENT,
-            `year` int(4) NOT NULL,
-            `cid` int(10) NOT NULL,
-            FOREIGN KEY (`cid`) REFERENCES county(`id`),
-            `sid` int(10) NOT NULL,
-            FOREIGN KEY (`sid`) REFERENCES state(`id`),
-            `allsales` int(10) DEFAULT NULL,
-            FOREIGN KEY (`allsales`) REFERENCES attribute(`id`),
-            `totalgained` int(10) DEFAULT NULL,
-            FOREIGN KEY (`totalgained`) REFERENCES attribute(`id`),
-            `salesperestablishment` int(10) DEFAULT NULL,
-            FOREIGN KEY (`salesperestablishment`) REFERENCES attribute(`id`),
-            `allbusinesses` int(10) DEFAULT NULL,
-            FOREIGN KEY (`allbusinesses`) REFERENCES attribute(`id`),
-            `nonresidentbusinesses` int(10) DEFAULT NULL,
-            FOREIGN KEY (`nonresidentbusinesses`) REFERENCES attribute(`id`),
-            `totallost` int(10) DEFAULT NULL,
-            FOREIGN KEY (`totallost`) REFERENCES attribute(`id`),
-            `salesperemployee` int(10) DEFAULT NULL,
-            FOREIGN KEY (`salesperemployee`) REFERENCES attribute(`id`),
-            `alljobs` int(10) DEFAULT NULL,
-            FOREIGN KEY (`alljobs`) REFERENCES attribute(`id`),
-            `noncommercial` int(10) DEFAULT NULL,
-            FOREIGN KEY (`noncommercial`) REFERENCES attribute(`id`),
-            `residentbusinesses` int(10) DEFAULT NULL,
-            FOREIGN KEY (`residentbusinesses`) REFERENCES attribute(`id`),
-            `changes` int(10) DEFAULT NULL,
-            FOREIGN KEY (`changes`) REFERENCES attribute(`id`),
-            PRIMARY KEY(`id`)
-        );
-        '''
-    query_op.query_database(ye_sql)
+    # ye_sql = '''
+    #     create table `ye`(
+    #         `id` int(10) NOT NULL AUTO_INCREMENT,
+    #         `year` int(4) NOT NULL,
+    #         `cid` int(10) NOT NULL,
+    #         FOREIGN KEY (`cid`) REFERENCES county(`id`),
+    #         `sid` int(10) NOT NULL,
+    #         FOREIGN KEY (`sid`) REFERENCES state(`id`),
+    #         `allsales` int(10) DEFAULT NULL,
+    #         FOREIGN KEY (`allsales`) REFERENCES attribute(`id`),
+    #         `totalgained` int(10) DEFAULT NULL,
+    #         FOREIGN KEY (`totalgained`) REFERENCES attribute(`id`),
+    #         `salesperestablishment` int(10) DEFAULT NULL,
+    #         FOREIGN KEY (`salesperestablishment`) REFERENCES attribute(`id`),
+    #         `allbusinesses` int(10) DEFAULT NULL,
+    #         FOREIGN KEY (`allbusinesses`) REFERENCES attribute(`id`),
+    #         `nonresidentbusinesses` int(10) DEFAULT NULL,
+    #         FOREIGN KEY (`nonresidentbusinesses`) REFERENCES attribute(`id`),
+    #         `totallost` int(10) DEFAULT NULL,
+    #         FOREIGN KEY (`totallost`) REFERENCES attribute(`id`),
+    #         `salesperemployee` int(10) DEFAULT NULL,
+    #         FOREIGN KEY (`salesperemployee`) REFERENCES attribute(`id`),
+    #         `alljobs` int(10) DEFAULT NULL,
+    #         FOREIGN KEY (`alljobs`) REFERENCES attribute(`id`),
+    #         `noncommercial` int(10) DEFAULT NULL,
+    #         FOREIGN KEY (`noncommercial`) REFERENCES attribute(`id`),
+    #         `residentbusinesses` int(10) DEFAULT NULL,
+    #         FOREIGN KEY (`residentbusinesses`) REFERENCES attribute(`id`),
+    #         `changes` int(10) DEFAULT NULL,
+    #         FOREIGN KEY (`changes`) REFERENCES attribute(`id`),
+    #         PRIMARY KEY(`id`)
+    #     );
+    #     '''
+    # query_op.query_database(ye_sql)
 
 
     job_sql = '''
