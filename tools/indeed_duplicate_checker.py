@@ -57,7 +57,7 @@ def export_indeed_data():
     lines = ['id,company,city,state,publishdate,position,postype,salary']
     for jid in jid_pos_type.keys():
     	pos,pt = jid_pos_type[jid]
-    	salary = jid.salary.get(jid,'NONE')
+    	salary = jid_salary.get(jid,'NONE')
     	attrs = jid_attrs[jid]
     	attrs.append(pos)
     	attrs.append(pt)
