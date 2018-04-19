@@ -122,7 +122,7 @@ def parse_location(location):
 
 ### 解析每一个job所需要的skill,假设一个job需要多个技能
 def parse_skill(path):
-    skills = []
+    skill_list = []
     for line in open(path):
         line = line.strip()
         jid,skills = line.split('\t')
@@ -133,9 +133,9 @@ def parse_skill(path):
             if hasnum(skill) or len(skill)<4:
                 continue
 
-            skills.append(skill.lower())
+            skill_list.append(skill.lower())
 
-    skill_counter = Counter(skills)
+    skill_counter = Counter(skill_list)
 
     lines = []
     skill_counter = []
