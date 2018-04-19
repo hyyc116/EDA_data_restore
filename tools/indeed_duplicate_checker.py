@@ -71,7 +71,7 @@ def export_indeed_data():
 
    	open('data/indeed_data.txt','w').write('\n'.join(lines))
 
-   	logging.info('DONE')
+   	# logging.info('DONE')
 
 
 
