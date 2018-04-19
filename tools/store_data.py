@@ -56,7 +56,7 @@ def store_county_and_city():
         sid = state_id[state]
         for county in state_county_city[state].keys():
             county_rows.append([county,sid])
-            for city in state_county_city[state][county]:
+            for city in set(state_county_city[state][county]):
                 city_rows.append([sid,county,city])
     ## 存储county
     insert_sql = 'insert into county(name,sid) values (%s,%s)'
