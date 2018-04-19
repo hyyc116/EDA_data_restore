@@ -47,6 +47,9 @@ def export_indeed_data():
         jid = jid.strip()
         city,state  = parse_location(location)
 
+        if city is None:
+        	continue
+
         jid_attrs[jid]=[jid,company,city,state,publishdate]
 
     logging.info('saving data ...')
@@ -147,15 +150,11 @@ def parse_position(path):
 def hasnum(inputString):
     return any(char.isdigit() for char in inputString)
 
-
-
-
-
 ###将所有条目的location，parse成state city的样式，存在zipcode
 def parse_location(location):
     splits  = location.strip().replace(', ','===').split()[0].split('===')
     if len(splits)!=2:
-    	print splits
+    	return None,None
     city,state = splits
     return city,state
 
