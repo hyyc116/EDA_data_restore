@@ -202,9 +202,9 @@ def store_ye():
                         value = col_subtype_attr_values[col][subtype]['attr_value']
                         ### 这里对于每一个属性都会存一个数值，导致了整个的一个问题，所以首先将attr所有都存起来，然后再存ye
                         row  = [cid,sid,year,col,subtype,value,percent]
-                        query_op.batch_insert(attr_insert_sql,row,10000,is_auto=False,end=False)
+                        query_op.batch_insert(attr_insert_sql,row,100000,is_auto=False,end=False)
 
-    query_op.batch_insert(attr_insert_sql,None,10000,is_auto=False,end=True)
+    query_op.batch_insert(attr_insert_sql,None,100000,is_auto=False,end=True)
     query_op.close_db()
 
 
