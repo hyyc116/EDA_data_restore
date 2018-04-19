@@ -143,15 +143,24 @@ def parse_skill(path):
         for word in sc.keys():
             word_dict[word].append([jid,sc[word]])
 
-    lines = []
+    jid_word_tfidf = defaultdict(dict)
     for word in word_dict.keys():
         df = word_dict[word]
         for jid,freq in df:
             tfidf = freq/float(len(df))
 
-            lines.append('{:}\t{:}\t{:}'.format(jid,word,tfidf))
+
+            jid_word_tfidf[jid][word]=tfidf
+
+    lines = []
+
+    for jid in jid_word_tfidf.keys():
+    	word_tfidf = jid_word_tfidf[jid]
+    	for word in sorted(word_tfidf.keys(),key=lambda x:word_tfidf[x],reverse=True):
+            lines.append('{:}\t{:}\t{:}'.format(jid,word,word_tfidf[word]))
 
     open('data/job_word_tfidf.txt','w').write('\n'.join(lines))
+    
 
 
 if __name__ == '__main__':
