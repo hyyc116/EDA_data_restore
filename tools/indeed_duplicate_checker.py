@@ -20,7 +20,7 @@ def check_data_duplicate():
         if progress%10000==0:
             logging.info('progress {:}, length of rows:{:} ...'.format(progress,len(rows)))
 
-        rows.add('{:},{:},{:},{:},{:}'.format(title,company,location,summary,publishdate))
+        rows.add('{:},{:},{:},{:}'.format(title,company,location,summary))
 
 if __name__ == '__main__':
 	check_data_duplicate()
