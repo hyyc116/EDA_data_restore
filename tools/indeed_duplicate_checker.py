@@ -5,6 +5,7 @@ import json
 import os
 from collections import Counter
 from db_util import *
+import numpy as np
 
 ### 存在同一公司在不同时间发布同样内容的情况，这种情况存在30多万条
 # def check_data_duplicate():
