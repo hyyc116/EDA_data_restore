@@ -229,7 +229,7 @@ def store_indeed():
         state_city_cid[abbr][name.lower()] = cityid
 
     path = 'data/indeed_data.txt'
-    insert_sql = 'insert into job(jid,company,cityid,position,postype,publishdate,salary) values (%s,%s,%s,%s,%s,%s,%s)'
+    insert_sql = 'insert into job(jobid,company,cityid,position,postype,publishdate,salary) values (%s,%s,%s,%s,%s,%s,%s)'
     for line in open(path):
         line = line.strip()
         _id,company,city,state,publishdate,position,postype,salary=line.split('\t')
