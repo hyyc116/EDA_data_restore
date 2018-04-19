@@ -238,10 +238,11 @@ def store_indeed():
 
         ## 根据city和state联立起来
 
-        city = city.strip().lower().replace(' ','')
-        cid = state_city_cid[state].get(city,-1)
+        name = city.strip().lower().replace(' ','')
+        cid = state_city_cid[state].get(name,-1)
         if cid==-1:
-            print city,state
+            logging.info('error city {:}=={:}'.format(city,state))
+            continue
 
 
         row = [_id,company,cid,position,postype,publishdate,salary]
