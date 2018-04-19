@@ -225,8 +225,8 @@ def store_indeed():
     state_city_cid = defaultdict(dict)
     for cityid,name,sid in query_op.query_database(sql):
         abbr = sid_abbr[sid]
-
-        state_city_cid[abbr][name.lower()] = cityid
+        city = name.strip().lower()
+        state_city_cid[abbr][city] = cityid
 
     path = 'data/indeed_data.txt'
     insert_sql = 'insert into job(jobid,company,cityid,position,postype,publishdate,salary) values (%s,%s,%s,%s,%s,%s,%s)'
@@ -238,9 +238,11 @@ def store_indeed():
 
         ## 根据city和state联立起来
 
-        cid = state_city_cid[state].get(city.lower(),-1)
+        city = city.strip().lower()
+        cid = state_city_cid[state].get(city,-1)
         if cid==-1:
-            print company,city,state
+            print city,state
+
 
         row = [_id,company,cid,position,postype,publishdate,salary]
 
