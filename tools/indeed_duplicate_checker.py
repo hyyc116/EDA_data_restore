@@ -54,17 +54,35 @@ def export_indeed_data():
 
     logging.info('saving data ...')
     ##只用已经抽出去pos的职位
-    lines = ['id,company,city,state,publishdate,position,postype,salary']
+    # lines = ['id,company,city,state,publishdate,position,postype,salary']
 
     total = len(jid_pos_type.keys())
     progress = 0
+    print 'id\tcompany\tcity\tstate\tpublishdate\tposition\tpostype\tsalary'
+
+    ##统计每种类型对应的job的工资
+    pt_salaries = defaultdict(list)
     for jid in jid_pos_type.keys():
 
-    	progress +=1
-    	if progress%10000==0:
-    		logging.info('progress {:}/{:} ...'.format(progress,total))
+        progress +=1
+        if progress%10000==0:
+            logging.info('progress {:}/{:} ...'.format(progress,total))
         pos,pt = jid_pos_type.get(jid)
-        salary = jid_salary.get(jid,'NONE')
+        salary = jid_salary.get(jid,None)
+
+        if salary is not None:
+            pt_salaries[pt].append(salary)
+
+    for jid in jid_pos_type.keys():
+
+        progress +=1
+        if progress%10000==0:
+            logging.info('progress {:}/{:} ...'.format(progress,total))
+        pos,pt = jid_pos_type.get(jid)
+        salary = jid_salary.get(jid,None)
+
+        if salary is None:
+            salary = np.mean(pt_salaries[pt])
 
         attrs = jid_attrs.get(jid,None)
 
@@ -74,7 +92,10 @@ def export_indeed_data():
         attrs.append(pos)
         attrs.append(pt)
         attrs.append(salary)
-       	line = '\t'.join([str(a) for a in attrs])
+
+
+
+        line = '\t'.join([str(a) for a in attrs])
 
         # open('data/indeed_data.txt','w').write('\n'.join(lines))
         print line
