@@ -226,7 +226,7 @@ def store_indeed():
     for cityid,name,sid in query_op.query_database(sql):
         abbr = sid_abbr[sid]
 
-        state_city_cid[abbr][city.lower()] = cityid
+        state_city_cid[abbr][name.lower()] = cityid
 
     path = 'data/indeed_data.txt'
     insert_sql = 'insert into job(jid,company,cityid,position,postype,publishdate,salary) values (%s,%s,%s,%s,%s,%s,%s)'
