@@ -56,11 +56,14 @@ def export_indeed_data():
     ##只用已经抽出去pos的职位
     lines = ['id,company,city,state,publishdate,position,postype,salary']
     for jid in jid_pos_type.keys():
-    	pos,pt = jid_pos_type.get(jid,[None,None])
-    	if pos is None:
-    		continue
+    	pos,pt = jid_pos_type.get(jid)
     	salary = jid_salary.get(jid,'NONE')
-    	attrs = jid_attrs[jid]
+
+    	attrs = jid_attrs.get(jid,None)
+
+    	if attrs is None:
+    		continue
+    		
     	attrs.append(pos)
     	attrs.append(pt)
     	attrs.append(salary)
