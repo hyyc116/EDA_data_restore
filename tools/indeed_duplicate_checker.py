@@ -37,7 +37,10 @@ def parse_position(path):
 
         if line=='':
             continue
-        jid,position = line.split('\t')
+            
+        splits= line.split('\t')
+        jid = splits[0]
+        position = ','.join(splits[1:])
         jid_position[jid] = position
 
 
