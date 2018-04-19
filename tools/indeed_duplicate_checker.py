@@ -55,7 +55,14 @@ def export_indeed_data():
     logging.info('saving data ...')
     ##只用已经抽出去pos的职位
     lines = ['id,company,city,state,publishdate,position,postype,salary']
+
+    total = len(jid_pos_type.keys())
+    progress = 0
     for jid in jid_pos_type.keys():
+
+    	progress +=1
+    	if progress%10000==0:
+    		logging.info('progress {:}/{:} ...'.format(progress,total))
         pos,pt = jid_pos_type.get(jid)
         salary = jid_salary.get(jid,'NONE')
 
@@ -67,9 +74,10 @@ def export_indeed_data():
         attrs.append(pos)
         attrs.append(pt)
         attrs.append(salary)
-        lines.append(','.join([str(a) for a in attrs]))
+       	line = ','.join([str(a) for a in attrs])
 
-        open('data/indeed_data.txt','w').write('\n'.join(lines))
+        # open('data/indeed_data.txt','w').write('\n'.join(lines))
+        print line
 
     logging.info('DONE')
 
