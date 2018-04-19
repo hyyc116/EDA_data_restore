@@ -78,20 +78,25 @@ def export_indeed_data():
 
     all_mean = np.mean(all_salaries)
 
+    pt_means = {}
+
+    for pt in pt_salaries.keys():
+    	pt_means[pt] = np.mean(pt_salaries[pt])
+
     progress=0
     for jid in jid_pos_type.keys():
 
         progress +=1
         if progress%10000==0:
-            logging.info('progress {:}/{:} ...'.format(progress,total))
+            logging.info('all progress {:}/{:} ...'.format(progress,total))
         pos,pt = jid_pos_type.get(jid)
         salary = jid_salary.get(jid,None)
 
         if salary is None:
-            if len(pt_salaries[pt])==0:
-                salary = all_mean
-            else:
-                salary = np.mean(pt_salaries[pt])
+            salary = pt_means.get(pt,-1)
+
+            if salary == -1:
+            	salary = all_mean
 
         attrs = jid_attrs.get(jid,None)
 
