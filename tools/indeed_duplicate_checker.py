@@ -137,7 +137,7 @@ def parse_position(path):
 
 
         if job_pos is not None:
-            job_pos_type.append('{:}\t{:}\t{:}'.format(jid,job_pos,job_type))
+            job_pos_type.append('{:}\t{:}\t{:}'.format(jid,job_pos.replace('\t',''),job_type))
 
     open('data/job_pos_type.txt','w').write('\n'.join(job_pos_type))
 
@@ -205,7 +205,7 @@ def parse_skill(path):
 if __name__ == '__main__':
     # check_data_duplicate()
 
-    # parse_position(sys.argv[1])
+    parse_position(sys.argv[1])
 
     # parse_skill(sys.argv[1])
 
