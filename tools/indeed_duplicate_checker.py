@@ -67,7 +67,7 @@ def export_indeed_data():
     	attrs.append(pos)
     	attrs.append(pt)
     	attrs.append(salary)
-    	lines.append(','.join(attrs))
+    	lines.append(','.join([str(a) for a in attrs]))
 
    	open('data/indeed_data.txt','w').write('\n'.join(lines))
 
