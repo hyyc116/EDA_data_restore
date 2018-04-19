@@ -53,9 +53,9 @@ def parse_position(path):
         poses= jid_position[jid].split(',')
 
         for pos in poses:
-            for word in pos.split():
-                jobwords.append(word.lower())
-
+            # for word in pos.split():
+            #     jobwords.append(word.lower())
+            jobwords.append(pos.lower())
     job_counter = Counter(jobwords)
 
     lines = []
