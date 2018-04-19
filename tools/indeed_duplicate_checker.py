@@ -63,6 +63,7 @@ def export_indeed_data():
 
     ##统计每种类型对应的job的工资
     pt_salaries = defaultdict(list)
+    all_salaries = []
     for jid in jid_pos_type.keys():
 
         progress +=1
@@ -73,6 +74,9 @@ def export_indeed_data():
 
         if salary is not None:
             pt_salaries[pt].append(salary)
+            all_salaries.append(salary)
+
+    all_mean = np.mean(all_salaries)
 
     for jid in jid_pos_type.keys():
 
@@ -83,7 +87,10 @@ def export_indeed_data():
         salary = jid_salary.get(jid,None)
 
         if salary is None:
-            salary = np.mean(pt_salaries[pt])
+        	if len(pt_salaries[pt])==0:
+        		salary = all_mean
+        	else:
+            	salary = np.mean(pt_salaries[pt])
 
         attrs = jid_attrs.get(jid,None)
 
