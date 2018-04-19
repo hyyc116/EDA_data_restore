@@ -78,6 +78,7 @@ def export_indeed_data():
 
     all_mean = np.mean(all_salaries)
 
+    progress=0
     for jid in jid_pos_type.keys():
 
         progress +=1
