@@ -39,8 +39,12 @@ def parse_position(path):
             continue
             
         splits= line.split('\t')
+        if len(splits)<2:
+        	continue
+
         jid = splits[0]
         position = ','.join(splits[1:])
+
         jid_position[jid] = position
 
 
@@ -53,9 +57,13 @@ def parse_position(path):
         poses= jid_position[jid].split(',')
 
         for pos in poses:
-            # for word in pos.split():
-            #     jobwords.append(word.lower())
-            jobwords.append(pos.lower())
+            if pos.strip()=='' or len(pos.strip())<4 or hasnum(pos):
+            	continue
+
+            for word in pos.split():
+                jobwords.append(word.lower())
+            
+            # jobwords.append(pos.lower())
     job_counter = Counter(jobwords)
 
     lines = []
@@ -64,6 +72,9 @@ def parse_position(path):
 
     open('data/job_words.txt','w').write('\n'.join(lines))
 
+
+def hasnum(inputString):
+	return any(char.isdigit() for char in inputString)
 
 
 
