@@ -61,6 +61,8 @@ def parse_position(path):
             	continue
 
             for word in pos.split():
+            	if len(word)<4:
+            		continue
                 jobwords.append(word.lower())
             
             # jobwords.append(pos.lower())
