@@ -141,67 +141,43 @@ def create_tables():
         '''
     query_op.query_database(ye_sql)
 
-    ## county ye
-    cy_sql = '''
-        create table `c_ye`(
-            `id` int(10) NOT NULL AUTO_INCREMENT,
-            `cid` int(4) NOT NULL,
-            FOREIGN KEY (`cid`) REFERENCES county(`id`),
-            `yid` int(10) NOT NULL,
-            FOREIGN KEY (`yid`) REFERENCES ye(`id`),
-            PRIMARY KEY(`id`)
-        );
-        '''
-    query_op.query_database(cy_sql)
 
     job_sql = '''
         create table `job`(
             `id` int(10) NOT NULL AUTO_INCREMENT,
+            `jobid` varchar(20) NOT NULL,
             `cityid` int(10) NOT NULL,
-            `title` varchar(30) NOT NULL,
             `company` varchar(10) NOT NULL,
-            `position` varchar(10) NOT NULL,
-            `summary` text DEFAULT NULL,
+            `position` varchar(100) NOT NULL,
+            `postype` varchar(50) NOT NULL,
             `publishdate` varchar(30) NOT NULL,
             `salary` int(20) DEFAULT -1,
-            `path` varchar(10) NOT NULL,
+            FOREIGN KEY(`cityid`) REFERENCES city(`id`),
             PRIMARY KEY(`id`)
         );
         '''
     query_op.query_database(job_sql)
 
-    skill_sql = '''
-        create table `skill`(
-            `id` int(10) NOT NULL AUTO_INCREMENT,
-            `name` varchar(50) NOT NULL,
-            PRIMARY KEY(`id`)
-        );
-        '''
-    query_op.query_database(skill_sql)
+    # skill_sql = '''
+    #     create table `skill`(
+    #         `id` int(10) NOT NULL AUTO_INCREMENT,
+    #         `name` varchar(50) NOT NULL,
+    #         PRIMARY KEY(`id`)
+    #     );
+    #     '''
+    # query_op.query_database(skill_sql)
 
-    job_skill = '''
-        create table `relations`(
-            `id` int(10) NOT NULL AUTO_INCREMENT,
-            `jid` int(10) NOT NULL,
-            `skillid` int(10) NOT NULL,
-            FOREIGN KEY (`jid`) REFERENCES job(`id`),
-            FOREIGN KEY (`skillid`) REFERENCES skill(`id`),
-            PRIMARY KEY(`id`)
-        );
-        '''
-    query_op.query_database(job_skill)
-
-    job_city_sql = '''
-        create table `job_city`(
-            `id` int(10) NOT NULL AUTO_INCREMENT,
-            `jid` int(10) NOT NULL,
-            `cid` int(10) NOT NULL,
-            FOREIGN KEY (`jid`) REFERENCES job(`id`),
-            FOREIGN KEY (`cid`) REFERENCES city(`id`),
-            PRIMARY KEY(`id`)
-        );
-        '''
-    query_op.query_database(job_city_sql)
+    # job_skill = '''
+    #     create table `relations`(
+    #         `id` int(10) NOT NULL AUTO_INCREMENT,
+    #         `jid` int(10) NOT NULL,
+    #         `skillid` int(10) NOT NULL,
+    #         FOREIGN KEY (`jid`) REFERENCES job(`id`),
+    #         FOREIGN KEY (`skillid`) REFERENCES skill(`id`),
+    #         PRIMARY KEY(`id`)
+    #     );
+    #     '''
+    # query_op.query_database(job_skill)
 
     query_op.close_db()
 

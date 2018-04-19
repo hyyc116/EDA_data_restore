@@ -114,6 +114,7 @@ def store_county_and_city():
     query_op.close_db()
 
 def store_ye():
+    logging.info('storing youreconomy data ...')
     cf = open('../data/county_add_missing_data.txt')
     titles = cf.readline().strip().split("\t")[4:]
 
@@ -202,12 +203,55 @@ def store_ye():
                 for col in cols:
                     values.append(col_id[col])
                 
-                ye_insert_op.batch_insert(ye_insert_sql,values,2000,is_auto=False,end=False)
+                ye_insert_op.batch_insert(ye_insert_sql,values,5000,is_auto=False,end=False)
 
-    ye_insert_op.batch_insert(ye_insert_sql,None,2000,is_auto=False,end=True)
+    ye_insert_op.batch_insert(ye_insert_sql,None,5000,is_auto=False,end=True)
 
     query_op.close_db()
     ye_insert_op.close_db()
+
+
+def store_indeed():
+    ##State中读取state的简写
+    logging.info('store indeed data ...')
+    query_op = dbop()
+    sql = 'select id,abbreviation from state'
+    sid_abbr  = {}
+    for sid,abbreviation in query_op.query_database(sql):
+        sid_abbr[sid]=abbreviation
+
+    ## 从city中读取state county city之间的关系
+    sql = 'select id,name,sid from city'
+    state_city_cid = defaultdict(dict)
+    for cityid,name,sid in query_op.query_database(sql):
+        abbr = sid_abbr[sid]
+
+        state_city_cid[state][city.lower()] = cid
+
+    path = 'data/indeed_data.txt'
+    insert_sql = 'insert into job(jid,company,cityid,position,postype,publishdate,salary) values (%s,%s,%s,%s,%s,%s,%s)'
+    for line in open(path):
+        line = line.strip()
+        _id,company,city,state,publishdate,position,postype,salary=line.split('\t')
+        if _id=='id':
+            continue
+
+        ## 根据city和state联立起来
+
+        cid = state_city_cid[state][city.lower()]
+
+        row = [_id,company,cid,position,postype,publishdate,salary]
+
+        query_op.batch_insert(insert_sql,row,5000,is_auto=False,end=False)
+
+    query_op.batch_insert(insert_sql,row,5000,is_auto=False,end=True)
+
+    logging.info('Done')
+
+
+
+
+    
 
 
 if __name__ == '__main__':
