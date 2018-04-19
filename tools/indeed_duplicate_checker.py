@@ -41,7 +41,7 @@ def export_indeed_data():
         progress+=1
 
         if progress%10000==0:
-            logging.info('progress {:}, length of rows:{:} ...'.format(progress,len(rows)))
+            logging.info('progress {:} ...'.format(progress))
 
         # rows.add('{:},{:},{:},{:}'.format(title,company,location,summary))
         jid = jid.strip()
