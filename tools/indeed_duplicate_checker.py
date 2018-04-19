@@ -90,10 +90,11 @@ def parse_position(path):
         for pos in poses:
             pos = pos.lower()
 
-            for word in pos:
+            for word in pos.split():
                 if word in job_words and job_counter.get(word,-1)>word_num:
                     job_pos = pos
                     job_type = word
+                    word_num = job_counter[word]
 
 
         if job_pos is not None:
