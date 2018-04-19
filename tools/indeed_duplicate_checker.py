@@ -14,7 +14,7 @@ def export_indeed_data():
 
     for line in open('extracted_salary.txt'):
         jid,salary = line.split('\t')
-        if salary is None:
+        if salary is None or salary=='None':
         	continue
         jid_salary[jid.strip()] = float(salary)
 
