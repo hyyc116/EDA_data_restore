@@ -153,12 +153,11 @@ def hasnum(inputString):
 
 ###将所有条目的location，parse成state city的样式，存在zipcode
 def parse_location(location):
-    city,state  = location.strip().replace(', ','===').split()[0].split('===')
-    print city,state
+    splits  = location.strip().replace(', ','===').split()[0].split('===')
+    if len(splits)!=2:
+    	print splits
+    city,state = splits
     return city,state
-
-
-
 
 ### 解析每一个job所需要的skill,假设一个job需要多个技能
 def parse_skill(path):
