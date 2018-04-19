@@ -12,7 +12,7 @@ def check_data_duplicate():
 
 
     _db = MySQLdb.connect("localhost","root","hy123","indeed_city")
-    sql = 'select id,title,company,location,summary,publishdate from     '
+    sql = 'select id,title,company,location,summary,publishdate from job'
     _cursor = _db.cursor()
 
     # rows = set([])
@@ -48,10 +48,10 @@ def parse_position(path):
         jid_position[jid] = position
 
 
-    logging.info('number of     s {:} ..'.format(len(jid_position.keys())))
+    logging.info('number of jobs {:} ..'.format(len(jid_position.keys())))
 
-        words = []
-    ## 首先根据出现的词的频率来确定    类型
+    jobwords = []
+    ## 首先根据出现的词的频率来确定job类型
     for jid in jid_position.keys():
         ##position中可能存在多个NP，那么和进行选择
         poses= jid_position[jid].split(',')
@@ -63,44 +63,44 @@ def parse_position(path):
             for word in pos.split():
                 if len(word)<4:
                     continue
-                    words.append(word.lower())
+                jobwords.append(word.lower())
             
-            #     words.append(pos.lower())
-        _counter = Counter(    words)
+            # jobwords.append(pos.lower())
+    job_counter = Counter(jobwords)
 
     lines = []
-        _words = []
-    for      in sorted(    _counter.keys(),key=lambda x:    _counter[x],reverse=True):
-        if     _counter[    ]<100:
+    job_words = []
+    for job in sorted(job_counter.keys(),key=lambda x:job_counter[x],reverse=True):
+        if job_counter[job]<100:
             continue
-        lines.append('{:}\t{:}'.format(    ,    _counter[    ]))
-            _words.append(    )
+        lines.append('{:}\t{:}'.format(job,job_counter[job]))
+        job_words.append(job)
 
-    open('data/    _words.txt','w').write('\n'.join(lines))
+    open('data/job_words.txt','w').write('\n'.join(lines))
 
-        _words = set(    _words)
-    ### 如果NP中包含     word，那么将这个position作为该条记录的pos，并且将    的类型设置为     words
-        _pos_type = []
+    job_words = set(job_words)
+    ### 如果NP中包含job word，那么将这个position作为该条记录的pos，并且将job的类型设置为job words
+    job_pos_type = []
     for jid in jid_position.keys():
         poses = jid_position[jid].split(',')
 
-            _pos = None
-            _type = None
+        job_pos = None
+        job_type = None
         word_index = -1
         for pos in poses:
             pos = pos.lower()
 
             for i,word in enumerate(pos.split()):
-                if word in     _words and i>word_index:
-                        _pos = pos
-                        _type = word
+                if word in job_words and i>word_index:
+                    job_pos = pos
+                    job_type = word
                     word_index = i
 
 
-        if     _pos is not None:
-                _pos_type.append('{:}\t{:}\t{:}'.format(jid,    _pos,    _type))
+        if job_pos is not None:
+            job_pos_type.append('{:}\t{:}\t{:}'.format(jid,job_pos,job_type))
 
-    open('data/    _pos_type.txt','w').write('\n'.join(    _pos_type))
+    open('data/job_pos_type.txt','w').write('\n'.join(job_pos_type))
 
     logging.info('Done')
 
@@ -120,7 +120,7 @@ def parse_location(location):
 
 
 
-### 解析每一个    所需要的skill,假设一个    需要多个技能
+### 解析每一个job所需要的skill,假设一个job需要多个技能
 def parse_skill(path):
     skills = []
     for line in open(path):
@@ -138,21 +138,19 @@ def parse_skill(path):
     skill_counter = Counter(skills)
 
     lines = []
-    skill_Nps = []
+    skill_counter = []
     for skill in sorted(skill_counter.keys(),key=lambda x:skill_counter[x],reverse=True):
         if skill_counter[skill]<100:
             continue
         lines.append('{:}\t{:}'.format(skill,skill_counter[skill]))
-        skill_Nps.append(skill)
+        skill_counter.append(skill)
 
-    open('data/skill_Nps.txt','w').write('\n'.join(lines))
+    open('data/skill_counter.txt','w').write('\n'.join(lines))
 
 if __name__ == '__main__':
     # check_data_duplicate()
 
-    # parse_position(sys.argv[1])
-
-    parse_skill(sys.argv[1])
+    parse_position(sys.argv[1])
 
 
 
