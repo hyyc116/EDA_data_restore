@@ -225,7 +225,7 @@ def store_indeed():
     state_city_cid = defaultdict(dict)
     for cityid,name,sid in query_op.query_database(sql):
         abbr = sid_abbr[sid]
-        city = name.strip().lower()
+        city = name.strip().lower().replace(' ','')
         state_city_cid[abbr][city] = cityid
 
     path = 'data/indeed_data.txt'
@@ -238,7 +238,7 @@ def store_indeed():
 
         ## 根据city和state联立起来
 
-        city = city.strip().lower()
+        city = city.strip().lower().replace(' ','')
         cid = state_city_cid[state].get(city,-1)
         if cid==-1:
             print city,state
