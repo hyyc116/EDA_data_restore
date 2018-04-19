@@ -7,9 +7,22 @@ from collections import Counter
 from db_util import *
 
 ### 存在同一公司在不同时间发布同样内容的情况，这种情况存在30多万条
-def check_data_duplicate():
+# def check_data_duplicate():
+def export_indeed_data():
+    ## 首先加载jid salary
+    jid_salary = {}
 
+    for line in open('extracted_salary.txt'):
+        jid,salary = line.split('\t')
+        jid[jid.strip()] = float(salary)
 
+    ## 加载 jid pos的文件
+    jid_pos_type = {}
+    for line in open('data/job_pos_type.txt'):
+        line = line.strip()
+        jid,pos,pt = line.split('\t')
+
+        jid_pos_type[jid.strip()] = [pos,pt]
 
     _db = MySQLdb.connect("localhost","root","hy123","indeed_city")
     sql = 'select id,title,company,location,summary,publishdate from job'
@@ -18,6 +31,8 @@ def check_data_duplicate():
     # rows = set([])
     progress = 0
     _cursor.execute(sql)
+    jid_attrs = {}
+    # lines = []
     for jid,title,company,location,summary,publishdate in _cursor:
         progress+=1
 
@@ -26,7 +41,27 @@ def check_data_duplicate():
 
         # rows.add('{:},{:},{:},{:}'.format(title,company,location,summary))
         jid = jid.strip()
-        city_sate  = parse_location(location)
+        city,state  = parse_location(location)
+
+        jid_attrs[jid]=[jid,company,city,state,publishdate]
+
+    logging.info('saving data ...')
+    ##只用已经抽出去pos的职位
+    lines = ['id,company,city,state,publishdate,position,postype,salary']
+    for jid in jid_pos_type.keys():
+    	pos,pt = jid_pos_type[jid]
+    	salary = jid.salary.get(jid,'NONE')
+    	attrs = jid_attrs[jid]
+    	attrs.append(pos)
+    	attrs.append(pt)
+    	attrs.append(salary)
+    	lines.append(','.join(attrs))
+
+   	open('data/indeed_data.txt','w').write('\n'.join(lines))
+
+   	logging.info('DONE')
+
+
 
 ## 读取已经parse出来的title中的Np，并且根据
 def parse_position(path):
@@ -114,8 +149,8 @@ def hasnum(inputString):
 
 ###将所有条目的location，parse成state city的样式，存在zipcode
 def parse_location(location):
-    city_state  = location.strip().replace(', ','===').split()[0]
-    return city_state
+    city,state  = location.strip().replace(', ','===').split()[0].split('===')
+    return city,state
 
 
 
@@ -155,8 +190,8 @@ def parse_skill(path):
     lines = []
 
     for jid in jid_word_tfidf.keys():
-    	word_tfidf = jid_word_tfidf[jid]
-    	for word in sorted(word_tfidf.keys(),key=lambda x:word_tfidf[x],reverse=True)[:5]:
+        word_tfidf = jid_word_tfidf[jid]
+        for word in sorted(word_tfidf.keys(),key=lambda x:word_tfidf[x],reverse=True)[:5]:
             lines.append('{:}\t{:}\t{:}'.format(jid,word,word_tfidf[word]))
 
     open('data/job_word_tfidf.txt','w').write('\n'.join(lines))
