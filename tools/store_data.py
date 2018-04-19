@@ -246,6 +246,8 @@ def store_indeed():
 
     query_op.batch_insert(insert_sql,row,5000,is_auto=False,end=True)
 
+
+    query_op.close_db()
     logging.info('Done')
 
 
@@ -255,7 +257,17 @@ def store_indeed():
 
 
 if __name__ == '__main__':
-    store_state()
-    store_county_and_city()
-    store_ye()
+    label = sys.argv[1]
+    if label=='store_state':
+        store_state()
+        store_county_and_city()
+
+    elif label=='store_ye':
+        store_ye()
+
+    elif label=='store_indeed':
+        store_indeed()
+
+    else:
+        logging.info('No such actions.')
 
