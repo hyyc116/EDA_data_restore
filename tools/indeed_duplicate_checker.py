@@ -133,7 +133,7 @@ def parse_skill(path):
             if hasnum(skill) or len(skill)<4:
                 continue
 
-            skills.append(skill)
+            skills.append(skill.lower())
 
     skill_counter = Counter(skills)
 
@@ -150,7 +150,9 @@ def parse_skill(path):
 if __name__ == '__main__':
     # check_data_duplicate()
 
-    parse_position(sys.argv[1])
+    # parse_position(sys.argv[1])
+
+    parse_skill(sys.argv[1])
 
 
 
