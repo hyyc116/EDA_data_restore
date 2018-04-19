@@ -69,12 +69,38 @@ def parse_position(path):
     job_counter = Counter(jobwords)
 
     lines = []
+    job_words = []
     for job in sorted(job_counter.keys(),key=lambda x:job_counter[x],reverse=True):
         if job_counter[job]<100:
             continue
         lines.append('{:}\t{:}'.format(job,job_counter[job]))
+        job_words.append(job)
 
     open('data/job_words.txt','w').write('\n'.join(lines))
+
+    ### 如果NP中包含job word，那么将这个position作为该条记录的pos，并且将job的类型设置为job words
+    job_pos_type = []
+    for jid in jid_position.keys():
+        poses = jid_position[jid].split(',')
+
+        job_pos = None
+        job_type = None
+        word_num = 0
+        for pos in poses:
+            pos = pos.lower()
+
+            for word in pos:
+                if word in job_words and job_counter.get(word,-1)>word_num:
+                    job_pos = pos
+                    job_type = word
+
+
+        if job_pos is not None:
+            job_pos_type.append('{:}\t{:}\t{:}'.format(jid,job_pos,job_type))
+
+    open('data/job_pos_type.txt','w').write('\n'.join(job_pos_type))
+
+    logging.info('Done')
 
 
 def hasnum(inputString):
