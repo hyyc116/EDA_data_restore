@@ -5,7 +5,7 @@ def store_state():
     ## store state data into database
     rows = []
     abbr_state = {}
-    for line in open('../data/state.txt'):
+    for line in open('data/state.txt'):
         line = line.strip()
         name,abbr = line.split(",")
         name = name.strip()
@@ -34,7 +34,7 @@ def store_county_and_city():
     logging.info('number of states is {:}.'.format(len(state_id.keys())))
 
     ## 存储county 以及 city
-    cf = open('../data/us_zipcode_list.csv')
+    cf = open('data/us_zipcode_list.csv')
     cf.readline()
     state_county_city = defaultdict(lambda:defaultdict(list))
     for line in cf:
@@ -115,7 +115,7 @@ def store_county_and_city():
 
 def store_ye():
     logging.info('storing youreconomy data ...')
-    cf = open('../data/county_add_missing_data.txt')
+    cf = open('data/county_add_missing_data.txt')
     titles = cf.readline().strip().split("\t")[4:]
 
     cols=[]
