@@ -149,7 +149,7 @@ def store_ye():
     sid_county_id = defaultdict(dict)
     for cid,county,sid in query_op.query_database(sql):
         county = county.lower().replace(' city','').replace('st.','saint').replace('st','saint').replace('-',' ').replace('\'','').strip()
-        if county.startswith('de'):
+        if county.startswith('de') or county.startswith('la'):
             county = county.replace(' ','')
         sid_county_id[sid][county] = cid
 
@@ -174,7 +174,7 @@ def store_ye():
 
             # print sid_county_id[state_id]
             county = county.lower().replace('st.','saint').replace('st','saint').replace(' city','').replace('-',' ').replace('\'','').strip()
-            if county.startswith('de'):
+            if county.startswith('de') or county.startswith('la'):
                 county = county.replace(' ','')
             cid = sid_county_id[sid].get(county.lower(),-1)
 
