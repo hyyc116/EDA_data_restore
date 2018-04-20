@@ -55,13 +55,13 @@ def export_ye(location):
 			if '$' in value:
 				value = value.replace('$','').replace(',','')
 				if value.endswith('B'):
-					value = float(value)*1000*1000*1000
+					value = float(value[:-1])*1000*1000*1000
 				elif value.endswith('M'):
-					value = float(value)*1000*1000
+					value = float(value[:-1])*1000*1000
 				elif value.endswith('K'):
-					value = float(value)*1000
+					value = float(value[:-1])*1000
 				elif value.endswith('T'):
-					value = float(value)*1000*1000*1000*1000
+					value = float(value[:-1])*1000*1000*1000*1000
 				else:
 					value = float(value)
 			else:
