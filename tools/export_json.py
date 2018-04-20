@@ -172,9 +172,12 @@ def export_indeed(location,abbr_name_topoid):
 
         abbr = sid_abbr[sid]
         county_name = cid_name[cid]
-        print county_name
+        # print county_name
         county_name = pro_county_name(county_name,abbr)
-        print county_name
+        # print county_name
+
+        if abbr_name_topoid[abbr].get(county_name,-1)==-1:
+        	continue
         obj={}
         obj['state'] = abbr
         obj['county'] = county_name
