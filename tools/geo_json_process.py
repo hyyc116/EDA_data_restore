@@ -15,7 +15,9 @@ def read_counties():
 
     geo_json = json.loads(open('/Users/huangyong/Downloads/us-counties.json').read())
     state_num = 0
-    
+    new_geo = {}
+    new_geo['type'] = 'FeatureCollection'
+    new_geo['features'] = []
     for state in geo_json['features']:
         abbr = state['properties']['state']
         num = int(state['properties']['counties'])
@@ -27,14 +29,17 @@ def read_counties():
         cts = set(state_county[abbr])
         state_num+=1
         counties = []
+        ## 要将 counties单独拉出来
         for county in state['counties']:
             cname = county['name']
             cname = pro_county_name(cname,abbr)
-            if cname not in cts:
-                # county['name'] = cname
-                print cname
+            if cname in cts:
+                county['name'] = cname
+                # county['state'] = abbr
+                # new_geo['features'].append(county)
+                # print cname
 
-    # open('/Users/huangyong/Downloads/us-counties-renamed.json','w').write(json.dumps(geo_json))
+    open('/Users/huangyong/Downloads/us-counties-renamed.json','w').write(json.dumps(geo_json))
 
 def pro_county_name(name,state):
     name = name.lower().replace(' city','').replace('sainte.','saint').replace('st.','saint').replace('st','saint').replace('-',' ').replace('\'','').strip()

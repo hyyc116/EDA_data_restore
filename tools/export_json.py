@@ -40,7 +40,27 @@ def load_location():
 
     query_op.close_db()
 
-def export_ye(location):
+def county_topo_id():
+	## 首先读state对应的ID
+	sid_abbr = {}
+	for line in open('us-state.txt'):
+		line = line.strip()
+		_id,abbr,name = line.split('\t')
+		sid_abbr[_id]=abbr
+
+	abbr_name_topoid = defaultdict(dict)
+	for line in open('us-counties.txt'):
+		line = line.strip()
+		_id,name = line.split('\t')
+		sid = _id[:-3]
+		abbr = sid_abbr[sid]
+		name = pro_county_name(name,abbr)
+		abbr_name_topoid[abbr][name]=_id
+
+	return abbr_name_topoid
+
+
+def export_ye(location,abbr_name_topoid):
     logging.info('export ye ...')
     sid_abbr,cid_sid,cid_name,city_top,cityid_name = location
     ## 将your economy的数据进行导出
@@ -84,6 +104,7 @@ def export_ye(location):
                 county = pro_county_name(county_name,abbr)
                 obj['county'] = county
                 obj['year'] = year
+                obj['topoid'] = abbr_name_topoid[abbr][county]
                 toptype_subtype_value = sid_cid_year_toptype_subtype_value[sid][cid][year]
                 ## 对于每一年，我们需要的数据
                 ## business by type, 中三种type
@@ -139,7 +160,7 @@ def pro_county_name(name,state):
     return  name+"("+state+")"   
 
 
-def export_indeed(location):
+def export_indeed(location,abbr_name_topoid):
     logging.info('export indeed ...')
     sid_abbr,cid_sid,cid_name,city_top,cityid_name = location
 
@@ -154,6 +175,7 @@ def export_indeed(location):
         obj={}
         obj['state'] = abbr
         obj['county'] = pro_county_name(county_name,abbr)
+        obj['topoid'] = abbr_name_topoid[abbr][county]
         obj['company'] = company.decode('utf-8',errors='ignore')
         obj['position'] = position
         obj['jobtype'] = postype
