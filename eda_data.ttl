@@ -1,0 +1,212 @@
+@prefix map: <#> .
+@prefix db: <> .
+@prefix vocab: <vocab/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix jdbc: <http://d2rq.org/terms/jdbc/> .
+@prefix : <http://www.edaprojectdata.org#> .
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "com.mysql.jdbc.Driver";
+	d2rq:jdbcDSN "jdbc:mysql:///EDA_DATA";
+	d2rq:username "root";
+	d2rq:password "hy123";
+	jdbc:zeroDateTimeBehavior "convertToNull";
+	jdbc:autoReconnect "true";
+	.
+
+# Table attribute
+map:attribute a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "attribute/@@attribute.id@@";
+	d2rq:class :Attr;
+	d2rq:classDefinitionLabel "attribute";
+	.
+
+map:attribute_year a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:attribute;
+	d2rq:property :attrYear;
+	d2rq:propertyDefinitionLabel "attribute year";
+	d2rq:column "attribute.year";
+	d2rq:datatype xsd:integer;
+	.
+map:attribute_toptype a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:attribute;
+	d2rq:property :attrToptype;
+	d2rq:propertyDefinitionLabel "attribute toptype";
+	d2rq:column "attribute.toptype";
+	.
+map:attribute_subtype a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:attribute;
+	d2rq:property :attrSubtype;
+	d2rq:propertyDefinitionLabel "attribute subtype";
+	d2rq:column "attribute.subtype";
+	.
+map:attribute_value a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:attribute;
+	d2rq:property :attrValue;
+	d2rq:propertyDefinitionLabel "attribute value";
+	d2rq:column "attribute.value";
+	.
+map:attribute_percent a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:attribute;
+	d2rq:property :attrPercent;
+	d2rq:propertyDefinitionLabel "attribute percent";
+	d2rq:column "attribute.percent";
+	.
+map:attribute_sid__ref a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:attribute;
+	d2rq:property :ofState;
+	d2rq:refersToClassMap map:state;
+	d2rq:join "attribute.sid => state.id";
+	.
+map:attribute_cid__ref a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:attribute;
+	d2rq:property :ofCounty;
+	d2rq:refersToClassMap map:county;
+	d2rq:join "attribute.cid => county.id";
+	.
+
+# Table city
+map:city a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "city/@@city.id@@";
+	d2rq:class :City;
+	d2rq:classDefinitionLabel "city";
+	.
+
+map:city_name a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:city;
+	d2rq:property :cityName;
+	d2rq:propertyDefinitionLabel "city name";
+	d2rq:column "city.name";
+	.
+map:city_ctid__ref a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:city;
+	d2rq:property :ofCounty;
+	d2rq:refersToClassMap map:county;
+	d2rq:join "city.ctid => county.id";
+	.
+map:city_sid__ref a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:city;
+	d2rq:property :ofState;
+	d2rq:refersToClassMap map:state;
+	d2rq:join "city.sid => state.id";
+	.
+
+# Table county
+map:county a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "county/@@county.id@@";
+	d2rq:class :County;
+	d2rq:classDefinitionLabel "county";
+	.
+
+map:county_name a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:county;
+	d2rq:property :countyName;
+	d2rq:propertyDefinitionLabel "county name";
+	d2rq:column "county.name";
+	.
+map:county_sid__ref a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:county;
+	d2rq:property :ofState;
+	d2rq:refersToClassMap map:state;
+	d2rq:join "county.sid => state.id";
+	.
+
+# Table county_city
+map:county_city_cid__link a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:county;
+	d2rq:property :hasCity;
+	d2rq:refersToClassMap map:city;
+	d2rq:join "county_city.cid => city.id";
+	d2rq:join "county_city.ctid => county.id";
+	.
+
+# Table job
+map:job a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "job/@@job.id@@";
+	d2rq:class :Job;
+	d2rq:classDefinitionLabel "job";
+	.
+
+map:job_company a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:job;
+	d2rq:property :ofCompany;
+	d2rq:propertyDefinitionLabel "job company";
+	d2rq:column "job.company";
+	.
+map:job_position a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:job;
+	d2rq:property :jobName;
+	d2rq:propertyDefinitionLabel "job position";
+	d2rq:column "job.position";
+	.
+map:job_postype a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:job;
+	d2rq:property :jobType;
+	d2rq:propertyDefinitionLabel "job postype";
+	d2rq:column "job.postype";
+	.
+map:job_publishdate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:job;
+	d2rq:property :publishdate;
+	d2rq:propertyDefinitionLabel "job publishdate";
+	d2rq:column "job.publishdate";
+	.
+map:job_salary a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:job;
+	d2rq:property :salary;
+	d2rq:propertyDefinitionLabel "job salary";
+	d2rq:column "job.salary";
+	d2rq:datatype xsd:integer;
+	.
+map:job_cityid__ref a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:job;
+	d2rq:property :inCity;
+	d2rq:refersToClassMap map:city;
+	d2rq:join "job.cityid => city.id";
+	.
+
+# Table state
+map:state a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "state/@@state.id@@";
+	d2rq:class :State;
+	d2rq:classDefinitionLabel "state";
+	.
+
+map:state_name a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:state;
+	d2rq:property :stateName;
+	d2rq:propertyDefinitionLabel "state name";
+	d2rq:column "state.name";
+	.
+map:state_abbreviation a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:state;
+	d2rq:property :stateAbbr;
+	d2rq:propertyDefinitionLabel "state abbreviation";
+	d2rq:column "state.abbreviation";
+	.
+
+# Table state_city
+map:state_city_sid__link a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:state;
+	d2rq:property :hasCity;
+	d2rq:refersToClassMap map:city;
+	d2rq:join "state_city.sid => state.id";
+	d2rq:join "state_city.cid => city.id";
+	.
+
+# Table state_county
+map:state_county_sid__link a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:state;
+	d2rq:property :hasCounty;
+	d2rq:refersToClassMap map:county;
+	d2rq:join "state_county.sid => state.id";
+	d2rq:join "state_county.cid => county.id";
+	.
