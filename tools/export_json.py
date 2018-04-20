@@ -172,10 +172,11 @@ def export_indeed(location,abbr_name_topoid):
 
         abbr = sid_abbr[sid]
         county_name = cid_name[cid]
+        county_name = pro_county_name(county_name,abbr)
         obj={}
         obj['state'] = abbr
-        obj['county'] = pro_county_name(county_name,abbr)
-        obj['topoid'] = abbr_name_topoid[abbr][county]
+        obj['county'] = county_name
+        obj['topoid'] = abbr_name_topoid[abbr][county_name]
         obj['company'] = company.decode('utf-8',errors='ignore')
         obj['position'] = position
         obj['jobtype'] = postype
