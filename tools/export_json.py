@@ -92,7 +92,7 @@ def export_ye(location,abbr_name_topoid):
     logging.info('start to export ...')
 
     all_data = []
-    lines = ['state,county,year,RESIDENT,NONCOMMERCIAL,NONRESIDENT,SELF EMPLOYEE,2-9 EMPLOYEES,10-99 EMPLOYEES,100-499 EMPLOYEES,500+ EMPLOYEES,GAINED,LOST,ALL SALES,SALES PER EMPLOYEE,SALES PER BUSINESS']
+    lines = ['state,county,year,topoid,RESIDENT,NONCOMMERCIAL,NONRESIDENT,SELF EMPLOYEE,2-9 EMPLOYEES,10-99 EMPLOYEES,100-499 EMPLOYEES,500+ EMPLOYEES,GAINED,LOST,ALL SALES,SALES PER EMPLOYEE,SALES PER BUSINESS']
     for sid in sid_cid_year_toptype_subtype_value.keys():
         abbr = sid_abbr[sid]
         logging.info('export state {:} ..'.format(abbr))
