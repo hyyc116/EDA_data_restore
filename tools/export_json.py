@@ -194,7 +194,7 @@ def export_indeed(location,abbr_name_topoid):
 
     open('data/indeed.json','w').write(json.dumps(all_data))
 
-    lines =['state,county,company,position,jobtype,salary,publishdate']
+    lines =['state,county,company,topoid,position,jobtype,salary,publishdate']
 
     labels = lines[0].split(',')
 
