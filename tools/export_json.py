@@ -100,7 +100,7 @@ def export_ye(location):
 				obj['LOST'] = toptype_subtype_value['totallost']['LOST']
 
 				##
-				obj['ALL SALES'] = toptype_subtype_value['allsales']['GAINED']
+				obj['ALL SALES'] = toptype_subtype_value['allsales']['ALL']
 				obj['SALES PER EMPLOYEE'] = toptype_subtype_value['salesperemployee']['SALES PER EMPLOYEE']
 				obj['SALES PER BUSINESS'] = toptype_subtype_value['salesperestablishment']['SALES PER BUSINESS']
 
