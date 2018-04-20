@@ -125,7 +125,7 @@ def export_indeed(location):
 		obj={}
 		obj['state'] = abbr
 		obj['county'] = county_name
-		obj['company'] = company
+		obj['company'] = company.decode('utf-8',errors='ignore')
 		obj['position'] = position
 		obj['jobtype'] = postype
 		obj['salary'] = salary
