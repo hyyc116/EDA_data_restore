@@ -145,7 +145,7 @@ def export_indeed(location):
 
     query_op = dbop()
     sql= 'select cityid,company,position,postype,publishdate,salary from job'
-    lines= []
+    all_data= []
     for cityid,company,position,postype,publishdate,salary in query_op.query_database(sql):
         sid,cid = city_top[cityid]
 
@@ -153,18 +153,32 @@ def export_indeed(location):
         county_name = cid_name[cid]
         obj={}
         obj['state'] = abbr
-        obj['county'] = county_name
+        obj['county'] = pro_county_name(county_name,abbr)
         obj['company'] = company.decode('utf-8',errors='ignore')
         obj['position'] = position
         obj['jobtype'] = postype
         obj['salary'] = salary
         obj['publishdate'] = publishdate
 
-        lines.append(obj)
+        all_data.append(obj)
 
     query_op.close_db()
 
-    open('data/indeed.json','w').write(json.dumps(lines))
+    open('data/indeed.json','w').write(json.dumps(all_data))
+
+    lines =['state,county,company,position,jobtype,salary,publishdate']
+
+    labels = lines[0].split(',')
+
+    for obj in all_data:
+    	line = []
+
+    	for label in labels:
+    		line.append(str(obj[label]))
+
+    	lines.append(','.join(line))
+
+    open('data/indeed.csv','w').write('\n'.join(lines))
 
     logging.info('Done')
 
