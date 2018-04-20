@@ -28,7 +28,7 @@ def load_location():
 
 	## 加载city的数据
 
-	sql= 'select id,name,sid,cid from city'
+	sql= 'select id,name,sid,ctid from city'
 	city_top = {}
 	cityid_name = {}
 
