@@ -212,10 +212,12 @@ if __name__ == '__main__':
 
     if label=='export_ye':
         location = load_location()
-        export_ye(location)
+        abbr_name_topoid = county_topo_id()
+        export_ye(location,abbr_name_topoid)
     elif label=='export_indeed':
         location = load_location()
-        export_indeed(location)
+        abbr_name_topoid = county_topo_id()
+        export_indeed(location,abbr_name_topoid)
     else:
         logging.info('No such label.')
 
