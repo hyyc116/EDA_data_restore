@@ -107,12 +107,37 @@ def export_ye(location):
 				all_data.append(obj)
 
 	open('data/yedata.json','w').write(json.dumps(all_data))
-
+	query_op.close_db()
 	logging.info('Done')
 
-def export_indeed():
-	pass
+def export_indeed(location):
+	logging.info('export indeed ...')
+	sid_abbr,cid_sid,cid_name,city_top,cityid_name = location
 
+	query_op = dbop()
+	sql= 'select cityid,company,position,postype,piblishdate,salary from job'
+	lines= []
+	for cityid,company,position,postype,piblishdate,salary in query_op.query_database(sql):
+		sid,cid = city_top[cityid]
+
+		abbr = sid_abbr[sid]
+		county_name = cid_name[cid]
+		obj={}
+		obj['state'] = abbr
+		obj['county'] = county_name
+		obj['company'] = company
+		obj['position'] = position
+		obj['jobtype'] = postype
+		obj['salary'] = salary
+		obj['publishdate'] = publishdate
+
+		lines.append(obj)
+
+	query_op.close_db()
+
+	open('data/indeed.json','w').write(json.dumps(lines))
+
+	logging.info('Done')
 
 
 
@@ -123,7 +148,9 @@ if __name__ == '__main__':
 	if label=='export_ye':
 		location = load_location()
 		export_ye(location)
-
+	elif label=='export_indeed':
+		location = load_location()
+		export_indeed(location)
 	else:
 		logging.info('No such label.')
 
