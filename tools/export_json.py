@@ -115,9 +115,9 @@ def export_indeed(location):
 	sid_abbr,cid_sid,cid_name,city_top,cityid_name = location
 
 	query_op = dbop()
-	sql= 'select cityid,company,position,postype,piblishdate,salary from job'
+	sql= 'select cityid,company,position,postype,publishdate,salary from job'
 	lines= []
-	for cityid,company,position,postype,piblishdate,salary in query_op.query_database(sql):
+	for cityid,company,position,postype,publishdate,salary in query_op.query_database(sql):
 		sid,cid = city_top[cityid]
 
 		abbr = sid_abbr[sid]
