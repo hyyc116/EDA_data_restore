@@ -7,152 +7,181 @@ from db_util import *
 
 ## 加载位置信息
 def load_location():
-	logging.info('load location ...')
+    logging.info('load location ...')
 
-	query_op = dbop()
-	## 加载state的数据
-	sql = 'select id,abbreviation from state'
-	sid_abbr = {}
-	for sid,abbreviation in query_op.query_database(sql):
-		sid_abbr[sid] = abbreviation
+    query_op = dbop()
+    ## 加载state的数据
+    sql = 'select id,abbreviation from state'
+    sid_abbr = {}
+    for sid,abbreviation in query_op.query_database(sql):
+        sid_abbr[sid] = abbreviation
 
-	## 加载 county的数据
-	sql = 'select id,name,sid from county'
-	cid_sid = {}
-	cid_name = {}
-	for cid,name,sid in query_op.query_database(sql):
-		cid_sid[cid] = sid
+    ## 加载 county的数据
+    sql = 'select id,name,sid from county'
+    cid_sid = {}
+    cid_name = {}
+    for cid,name,sid in query_op.query_database(sql):
+        cid_sid[cid] = sid
 
-		cid_name[cid] = name
-	
+        cid_name[cid] = name
+    
 
-	## 加载city的数据
+    ## 加载city的数据
 
-	sql= 'select id,name,sid,ctid from city'
-	city_top = {}
-	cityid_name = {}
+    sql= 'select id,name,sid,ctid from city'
+    city_top = {}
+    cityid_name = {}
 
-	for cityid,name,sid,cid in query_op.query_database(sql):
-		city_top[cityid] = [sid,cid]
-		cityid_name[cityid] = name
+    for cityid,name,sid,cid in query_op.query_database(sql):
+        city_top[cityid] = [sid,cid]
+        cityid_name[cityid] = name
 
-	return sid_abbr,cid_sid,cid_name,city_top,cityid_name
+    return sid_abbr,cid_sid,cid_name,city_top,cityid_name
 
-	query_op.close_db()
+    query_op.close_db()
 
 def export_ye(location):
-	logging.info('export ye ...')
-	sid_abbr,cid_sid,cid_name,city_top,cityid_name = location
-	## 将your economy的数据进行导出
-	sql = 'select cid,year,sid,toptype,subtype,value from attribute'
-	query_op = dbop()
-	sid_cid_year_toptype_subtype_value = defaultdict(lambda : defaultdict(lambda : defaultdict(lambda : defaultdict(dict))))
-	for cid,year,sid,toptype,subtype,value in query_op.query_database(sql):
-		
-		if value=='NA':
-			value = 0.0
-		else:
-			if '$' in value:
-				value = value.replace('$','').replace(',','')
-				if value.endswith('B'):
-					value = float(value[:-1])*1000*1000*1000
-				elif value.endswith('M'):
-					value = float(value[:-1])*1000*1000
-				elif value.endswith('K'):
-					value = float(value[:-1])*1000
-				elif value.endswith('T'):
-					value = float(value[:-1])*1000*1000*1000*1000
-				else:
-					value = float(value)
-			else:
-				value = float(value.replace('*','').replace(',',''))
+    logging.info('export ye ...')
+    sid_abbr,cid_sid,cid_name,city_top,cityid_name = location
+    ## 将your economy的数据进行导出
+    sql = 'select cid,year,sid,toptype,subtype,value from attribute'
+    query_op = dbop()
+    sid_cid_year_toptype_subtype_value = defaultdict(lambda : defaultdict(lambda : defaultdict(lambda : defaultdict(dict))))
+    for cid,year,sid,toptype,subtype,value in query_op.query_database(sql):
+        
+        if value=='NA':
+            value = 0.0
+        else:
+            if '$' in value:
+                value = value.replace('$','').replace(',','')
+                if value.endswith('B'):
+                    value = float(value[:-1])*1000*1000*1000
+                elif value.endswith('M'):
+                    value = float(value[:-1])*1000*1000
+                elif value.endswith('K'):
+                    value = float(value[:-1])*1000
+                elif value.endswith('T'):
+                    value = float(value[:-1])*1000*1000*1000*1000
+                else:
+                    value = float(value)
+            else:
+                value = float(value.replace('*','').replace(',',''))
 
-		sid_cid_year_toptype_subtype_value[sid][cid][year][toptype][subtype] = value
+        sid_cid_year_toptype_subtype_value[sid][cid][year][toptype][subtype] = value
 
-	logging.info('start to export ...')
+    logging.info('start to export ...')
 
-	all_data = []
-	for sid in sid_cid_year_toptype_subtype_value.keys():
-		abbr = sid_abbr[sid]
-		logging.info('export state {:} ..'.format(abbr))
-		for cid in sid_cid_year_toptype_subtype_value[sid].keys():
-			county_name = cid_name[cid]
-			for year in sid_cid_year_toptype_subtype_value[sid][cid].keys():
-				obj = {}
-				obj['state']  = abbr
-				obj['county'] = county_name
-				toptype_subtype_value = sid_cid_year_toptype_subtype_value[sid][cid][year]
-				## 对于每一年，我们需要的数据
-				## business by type, 中三种type
-				obj['RESIDENT'] = toptype_subtype_value['allbusinesses']['RESIDENT']
-				obj['NONCOMMERCIAL'] = toptype_subtype_value['allbusinesses']['NONCOMMERCIAL']
-				obj['NONRESIDENT'] = toptype_subtype_value['allbusinesses']['NONRESIDENT']
+    all_data = []
+    lines = ['state,county,year,RESIDENT,NONCOMMERCIAL,NONRESIDENT,SELF EMPLOYEE,2-9 EMPLOYEES,10-99 EMPLOYEES,100-499 EMPLOYEES,500+ EMPLOYEES,GAINED,LOST,ALL SALES,SALES PER EMPLOYEE,SALES PER BUSINESS']
+    for sid in sid_cid_year_toptype_subtype_value.keys():
+        abbr = sid_abbr[sid]
+        logging.info('export state {:} ..'.format(abbr))
+        for cid in sid_cid_year_toptype_subtype_value[sid].keys():
+            county_name = cid_name[cid]
+            for year in sid_cid_year_toptype_subtype_value[sid][cid].keys():
+                obj = {}
+                obj['state']  = abbr
+                county = pro_county_name(county_name,abbr)
+                obj['county'] = county
+                obj['year'] = year
+                toptype_subtype_value = sid_cid_year_toptype_subtype_value[sid][cid][year]
+                ## 对于每一年，我们需要的数据
+                ## business by type, 中三种type
+                resident = toptype_subtype_value['allbusinesses']['RESIDENT']
+                nonresident = toptype_subtype_value['allbusinesses']['NONRESIDENT']
+                noncommercial = toptype_subtype_value['allbusinesses']['NONCOMMERCIAL']
+                obj['RESIDENT'] = resident
+                obj['NONCOMMERCIAL'] = noncommercial
+                obj['NONRESIDENT'] = nonresident
 
-				## job中的几个阶段
-				obj['SELF EMPLOYEE'] = toptype_subtype_value['alljobs']['Self-Employed (1)']
-				obj['2-9 EMPLOYEES'] = toptype_subtype_value['alljobs']['2-9 Employees']
-				obj['10-99 EMPLOYEES'] = toptype_subtype_value['alljobs']['10-99 Employees']
-				obj['100-499 EMPLOYEES'] = toptype_subtype_value['alljobs']['100-499 Employees']
-				obj['500+ EMPLOYEES'] = toptype_subtype_value['alljobs']['500+ Employees']
+                ## job中的几个阶段
+                obj['SELF EMPLOYEE'] = toptype_subtype_value['alljobs']['Self-Employed (1)']
+                obj['2-9 EMPLOYEES'] = toptype_subtype_value['alljobs']['2-9 Employees']
+                obj['10-99 EMPLOYEES'] = toptype_subtype_value['alljobs']['10-99 Employees']
+                obj['100-499 EMPLOYEES'] = toptype_subtype_value['alljobs']['100-499 Employees']
+                obj['500+ EMPLOYEES'] = toptype_subtype_value['alljobs']['500+ Employees']
 
-				## GAIN LOST
-				obj['GAINED'] = toptype_subtype_value['totalgained']['GAINED']
-				obj['LOST'] = toptype_subtype_value['totallost']['LOST']
+                ## GAIN LOST
+                obj['GAINED'] = toptype_subtype_value['totalgained']['GAINED']
+                obj['LOST'] = toptype_subtype_value['totallost']['LOST']
 
-				##
-				obj['ALL SALES'] = toptype_subtype_value['allsales']['ALL']
-				obj['SALES PER EMPLOYEE'] = toptype_subtype_value['salesperemployee']['SALES PER EMPLOYEE']
-				obj['SALES PER BUSINESS'] = toptype_subtype_value['salesperestablishment']['SALES PER BUSINESS']
+                ##
+                obj['ALL SALES'] = toptype_subtype_value['allsales']['ALL']
+                obj['SALES PER EMPLOYEE'] = toptype_subtype_value['salesperemployee']['SALES PER EMPLOYEE']
+                obj['SALES PER BUSINESS'] = toptype_subtype_value['salesperestablishment']['SALES PER BUSINESS']
 
-				all_data.append(obj)
+                all_data.append(obj)
 
-	open('data/yedata.json','w').write(json.dumps(all_data))
-	query_op.close_db()
-	logging.info('Done')
+    open('data/yedata.json','w').write(json.dumps(all_data))
+
+    labels = lines[0].split(',')
+
+    for obj in all_data:
+    	line = []
+
+    	for label in labels:
+    		line.append(str(obj[label]))
+
+    	lines.append(','.join(line))
+
+    open('data/yedata.csv','w').write('\n'.join(lines))
+
+    query_op.close_db()
+    logging.info('Done')
+
+
+def pro_county_name(name,state):
+
+    name = name.lower().replace(' city','').replace('sainte.','saint').replace('st.','saint').replace('st','saint').replace('-',' ').replace('\'','').strip()
+    if name.startswith('de') or name.startswith('la'):
+        name = name.replace(' ','')
+    name = name.capitalize()
+    return  name+"("+state+")"   
+
 
 def export_indeed(location):
-	logging.info('export indeed ...')
-	sid_abbr,cid_sid,cid_name,city_top,cityid_name = location
+    logging.info('export indeed ...')
+    sid_abbr,cid_sid,cid_name,city_top,cityid_name = location
 
-	query_op = dbop()
-	sql= 'select cityid,company,position,postype,publishdate,salary from job'
-	lines= []
-	for cityid,company,position,postype,publishdate,salary in query_op.query_database(sql):
-		sid,cid = city_top[cityid]
+    query_op = dbop()
+    sql= 'select cityid,company,position,postype,publishdate,salary from job'
+    lines= []
+    for cityid,company,position,postype,publishdate,salary in query_op.query_database(sql):
+        sid,cid = city_top[cityid]
 
-		abbr = sid_abbr[sid]
-		county_name = cid_name[cid]
-		obj={}
-		obj['state'] = abbr
-		obj['county'] = county_name
-		obj['company'] = company.decode('utf-8',errors='ignore')
-		obj['position'] = position
-		obj['jobtype'] = postype
-		obj['salary'] = salary
-		obj['publishdate'] = publishdate
+        abbr = sid_abbr[sid]
+        county_name = cid_name[cid]
+        obj={}
+        obj['state'] = abbr
+        obj['county'] = county_name
+        obj['company'] = company.decode('utf-8',errors='ignore')
+        obj['position'] = position
+        obj['jobtype'] = postype
+        obj['salary'] = salary
+        obj['publishdate'] = publishdate
 
-		lines.append(obj)
+        lines.append(obj)
 
-	query_op.close_db()
+    query_op.close_db()
 
-	open('data/indeed.json','w').write(json.dumps(lines))
+    open('data/indeed.json','w').write(json.dumps(lines))
 
-	logging.info('Done')
+    logging.info('Done')
 
 
 
 if __name__ == '__main__':
 
-	label = sys.argv[1]
+    label = sys.argv[1]
 
-	if label=='export_ye':
-		location = load_location()
-		export_ye(location)
-	elif label=='export_indeed':
-		location = load_location()
-		export_indeed(location)
-	else:
-		logging.info('No such label.')
+    if label=='export_ye':
+        location = load_location()
+        export_ye(location)
+    elif label=='export_indeed':
+        location = load_location()
+        export_indeed(location)
+    else:
+        logging.info('No such label.')
 
 
 
