@@ -11,10 +11,10 @@ def load_location():
 
 	query_op = dbop()
 	## 加载state的数据
-	sql = 'select id,abbraviation from state'
+	sql = 'select id,abbreviation from state'
 	sid_abbr = {}
-	for sid,abbraviation in query_op.query_database(sql):
-		sid_abbr[sid] = abbraviation
+	for sid,abbreviation in query_op.query_database(sql):
+		sid_abbr[sid] = abbreviation
 
 	## 加载 county的数据
 	sql = 'select id,name,sid from county'

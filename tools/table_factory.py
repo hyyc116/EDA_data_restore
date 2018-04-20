@@ -21,6 +21,7 @@ def create_tables():
         create table `state`(
             `id` int(10) NOT NULL AUTO_INCREMENT,
             `name` varchar(30) NOT NULL,
+    logging.info('export ye ...')
             `abbreviation` varchar(30) NOT NULL,
             PRIMARY KEY(`id`)
         );
