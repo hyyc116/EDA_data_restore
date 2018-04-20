@@ -153,7 +153,7 @@ def create_tables():
             `id` int(10) NOT NULL AUTO_INCREMENT,
             `jobid` varchar(20) NOT NULL,
             `cityid` int(10) NOT NULL,
-            `company` varchar(10) NOT NULL,
+            `company` varchar(100) NOT NULL,
             `position` varchar(100) NOT NULL,
             `postype` varchar(50) NOT NULL,
             `publishdate` varchar(30) NOT NULL,
