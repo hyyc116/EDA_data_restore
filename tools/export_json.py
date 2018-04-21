@@ -217,6 +217,8 @@ def export_indeed(location,abbr_name_topoid):
     	for label in labels:
     		if label == 'company':
     			line.append(str(company_to_id[obj[label]]))
+    		elif label == 'publishdate':
+    			line.append(str(obj[label]).split()[0])
     		else:
     			line.append(str(obj[label]))
 
