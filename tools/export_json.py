@@ -165,7 +165,11 @@ def export_indeed(location,abbr_name_topoid):
     sid_abbr,cid_sid,cid_name,city_top,cityid_name = location
 
     query_op = dbop()
-    sql= 'select cityid,company,position,postype,publishdate,salary from job'
+    ## 将company的数据与id进行对应
+    company_to_id = {}
+    company_set = set([])
+    _id_to_company = {}
+    sql= 'select company,postype,publishdate,salary from job'
     all_data= []
     for cityid,company,position,postype,publishdate,salary in query_op.query_database(sql):
         sid,cid = city_top[cityid]
@@ -182,7 +186,15 @@ def export_indeed(location,abbr_name_topoid):
         obj['state'] = abbr
         obj['county'] = county_name
         obj['topoid'] = abbr_name_topoid[abbr][county_name]
-        obj['company'] = company.decode('utf-8',errors='ignore')
+        company = company.decode('utf-8',errors='ignore')
+        
+        ##给company进行编号
+        if company not in company_set:
+        	company_to_id[company] = len(company_set)
+        	_id_to_company[len(company_set)] = company
+        	company_set.add(company)
+
+        obj['company'] = company
         obj['position'] = position
         obj['jobtype'] = postype
         obj['salary'] = salary
@@ -202,11 +214,17 @@ def export_indeed(location,abbr_name_topoid):
     	line = []
 
     	for label in labels:
-    		line.append(str(obj[label]))
+    		vls = str(obj[label])
+    		if label=='company':
+    			company_id = company_to_id[company]
+    			vls = str(company_id)
+
+    		line.append(vls)
 
     	lines.append(','.join(line))
 
     open('data/indeed.csv','w').write('\n'.join(lines))
+    # open('')
 
     logging.info('Done')
 
