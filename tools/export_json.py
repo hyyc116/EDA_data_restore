@@ -41,23 +41,23 @@ def load_location():
     query_op.close_db()
 
 def county_topo_id():
-	## 首先读state对应的ID
-	sid_abbr = {}
-	for line in open('us-state.txt'):
-		line = line.strip()
-		_id,abbr,name = line.split('\t')
-		sid_abbr[_id]=abbr
+    ## 首先读state对应的ID
+    sid_abbr = {}
+    for line in open('us-state.txt'):
+        line = line.strip()
+        _id,abbr,name = line.split('\t')
+        sid_abbr[_id]=abbr
 
-	abbr_name_topoid = defaultdict(dict)
-	for line in open('us-counties.txt'):
-		line = line.strip()
-		_id,name = line.split('\t')
-		sid = _id[:-3]
-		abbr = sid_abbr[sid]
-		name = pro_county_name(name,abbr)
-		abbr_name_topoid[abbr][name]=_id
+    abbr_name_topoid = defaultdict(dict)
+    for line in open('us-counties.txt'):
+        line = line.strip()
+        _id,name = line.split('\t')
+        sid = _id[:-3]
+        abbr = sid_abbr[sid]
+        name = pro_county_name(name,abbr)
+        abbr_name_topoid[abbr][name]=_id
 
-	return abbr_name_topoid
+    return abbr_name_topoid
 
 
 def export_ye(location,abbr_name_topoid):
@@ -138,12 +138,12 @@ def export_ye(location,abbr_name_topoid):
     labels = lines[0].split(',')
 
     for obj in all_data:
-    	line = []
+        line = []
 
-    	for label in labels:
-    		line.append(str(obj[label]))
+        for label in labels:
+            line.append(str(obj[label]))
 
-    	lines.append(','.join(line))
+        lines.append(','.join(line))
 
     open('data/yedata.csv','w').write('\n'.join(lines))
 
@@ -181,7 +181,7 @@ def export_indeed(location,abbr_name_topoid):
         # print county_name
 
         if abbr_name_topoid[abbr].get(county_name,-1)==-1:
-        	continue
+            continue
         obj={}
         obj['state'] = abbr
         obj['county'] = county_name
@@ -190,9 +190,9 @@ def export_indeed(location,abbr_name_topoid):
         
         ##给company进行编号
         if company not in company_set:
-        	company_to_id[company] = len(company_set)
-        	company_set.add(company)
-        	_id_to_company[len(company_set)] = company
+            company_to_id[company] = len(company_set)
+            company_set.add(company)
+            _id_to_company[len(company_set)] = company
 
 
         obj['company'] = company
@@ -212,17 +212,15 @@ def export_indeed(location,abbr_name_topoid):
     labels = lines[0].split(',')
 
     for obj in all_data:
-    	line = []
+        line = []
 
-    	for label in labels:
-    		if label == 'company':
-    			line.append(str(company_to_id[obj[label]]))
-    		elif label == 'publishdate':
-    			line.append(str(obj[label]).split()[0])
-    		else:
-    			line.append(str(obj[label]))
+        for label in labels:
+            if label == 'company':
+                line.append(str(company_to_id[obj[label]]))
+            else:
+                line.append(str(obj[label]))
 
-    	lines.append(','.join(line))
+        lines.append(','.join(line))
 
     open('data/indeed.csv','w').write('\n'.join(lines))
 
