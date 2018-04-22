@@ -226,7 +226,13 @@ def export_indeed(location,abbr_name_topoid):
 
     open('data/company_id_to_name.json','w').write(json.dumps(_id_to_company))
 
+
+    for line in open('data/indeed.csv'):
+    	if len(line.strip().split(','))!=5:
+    		print line
+
     logging.info('Done')
+    
 
 
 
