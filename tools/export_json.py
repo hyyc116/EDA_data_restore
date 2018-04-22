@@ -207,8 +207,8 @@ def export_indeed(location,abbr_name_topoid):
 
     open('data/indeed.json','w').write(json.dumps(all_data))
 
-    lines =['state,company,topoid,jobtype,salary']
-
+    # lines =['state,company,topoid,jobtype,salary']
+    lines = ['state,company,jobtype,salary']
     labels = lines[0].split(',')
 
     for obj in all_data:
@@ -228,7 +228,7 @@ def export_indeed(location,abbr_name_topoid):
 
 
     for line in open('data/indeed.csv'):
-    	if len(line.strip().split(','))!=5:
+    	if len(line.strip().split(','))!=4:
     		print line
 
     logging.info('Done')
