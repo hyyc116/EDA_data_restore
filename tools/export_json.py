@@ -191,8 +191,9 @@ def export_indeed(location,abbr_name_topoid):
         ##给company进行编号
         if company not in company_set:
             company_to_id[company] = len(company_set)
-            company_set.add(company)
             _id_to_company[len(company_set)] = company
+            company_set.add(company)
+            
 
 
         obj['company'] = company
