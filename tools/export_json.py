@@ -215,13 +215,18 @@ def export_indeed(location,abbr_name_topoid):
     for obj in all_data:
         line = []
 
+        reserved =True
         for label in labels:
             if label == 'company':
+                if obj[label] is None or obj[label]=='None':
+                    reserved=False
+
                 line.append(str(company_to_id[obj[label]]))
             else:
                 line.append(str(obj[label]))
 
-        lines.append(','.join(line))
+        if reserved:
+            lines.append(','.join(line))
 
     open('data/indeed.csv','w').write('\n'.join(lines))
 
